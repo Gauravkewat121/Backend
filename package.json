@@ -1,0 +1,25 @@
+{
+  "name": "manager",
+  "version": "1.0.0",
+  "description": "movie project for managing the movie theatre and tickets",
+  "homepage": "https://github.com/Gauravkewat121/Movie-Project#readme",
+  "bugs": {
+    "url": "https://github.com/Gauravkewat121/Movie-Project/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gauravkewat121/Movie-Project.git"
+  },
+  "license": "ISC",
+  "author": "Gaurav Kewat",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  }
+}
