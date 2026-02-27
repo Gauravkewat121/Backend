@@ -38,8 +38,6 @@ function initModels(sequelize) {
   Screens.hasMany(MovieTheaters, { as: "MovieTheaters", foreignKey: "screen_id"});
   Seats.belongsTo(Screens, { as: "screen", foreignKey: "screen_id"});
   Screens.hasMany(Seats, { as: "Seats", foreignKey: "screen_id"});
-  Shows.belongsTo(Screens, { as: "screen", foreignKey: "screen_id"});
-  Screens.hasMany(Shows, { as: "Shows", foreignKey: "screen_id"});
   Bookings.belongsTo(Seats, { as: "seat", foreignKey: "seat_id"});
   Seats.hasMany(Bookings, { as: "Bookings", foreignKey: "seat_id"});
   Bookings.belongsTo(Shows, { as: "show", foreignKey: "show_id"});

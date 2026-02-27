@@ -1,52 +1,37 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('Bookings', {
-    booking_id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true
-    },
+  return sequelize.define('MovieTheaters', {
     movie_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'Movies',
         key: 'movie_id'
       }
     },
-    user_id: {
+    theater_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
-        model: 'Users',
-        key: 'user_id'
+        model: 'Theaters',
+        key: 'theater_id'
       }
     },
     show_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'Shows',
         key: 'show_id'
       }
     },
-    seat_id: {
+    screen_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
-        model: 'Seats',
-        key: 'seat_id'
+        model: 'Screens',
+        key: 'screen_id'
       }
-    },
-    booking_time: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    status: {
-      type: DataTypes.ENUM('booked','wait-list','cancelled'),
-      allowNull: false,
-      defaultValue: "booked"
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,
@@ -55,18 +40,10 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'Bookings',
+    tableName: 'MovieTheaters',
     timestamps: true,
     paranoid: true,
     indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "booking_id" },
-        ]
-      },
       {
         name: "movie_id",
         using: "BTREE",
@@ -75,10 +52,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "user_id",
+        name: "theater_id",
         using: "BTREE",
         fields: [
-          { name: "user_id" },
+          { name: "theater_id" },
         ]
       },
       {
@@ -89,10 +66,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "seat_id",
+        name: "screen_id",
         using: "BTREE",
         fields: [
-          { name: "seat_id" },
+          { name: "screen_id" },
         ]
       },
     ]

@@ -32,7 +32,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    isActive: {
+    isDeleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: 1
@@ -40,7 +40,7 @@ module.exports = function(sequelize, DataTypes) {
     paid_at: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: "2026-02-26 10:56:45"
+      defaultValue: "2026-02-27 06:54:11"
     }
   }, {
     sequelize,

@@ -26,11 +26,17 @@ module.exports = function(sequelize, DataTypes) {
     rating: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 1
     }
   }, {
     sequelize,
     tableName: 'Feedbacks',
-    timestamps: false,
+    timestamps: true,
+    paranoid: true,
     indexes: [
       {
         name: "PRIMARY",

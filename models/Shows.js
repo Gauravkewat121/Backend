@@ -7,14 +7,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    screen_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Screens',
-        key: 'screen_id'
-      }
-    },
     start_time: {
       type: DataTypes.DATE,
       allowNull: false
@@ -27,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    isActive: {
+    isDeleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: 1
@@ -44,13 +36,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "show_id" },
-        ]
-      },
-      {
-        name: "screen_id",
-        using: "BTREE",
-        fields: [
-          { name: "screen_id" },
         ]
       },
     ]
