@@ -31,9 +31,9 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TIME,
       allowNull: false
     },
-    Holiday: {
+    holiday: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      allowNull: true
     },
     status: {
       type: DataTypes.ENUM('active','inactive'),

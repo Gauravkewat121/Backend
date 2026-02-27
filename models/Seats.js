@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       references: {
         model: 'Screens',
-        key: 'screeen_id'
+        key: 'screen_id'
       }
     },
     seat_number: {

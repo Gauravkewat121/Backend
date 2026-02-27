@@ -12,15 +12,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       references: {
         model: 'Screens',
-        key: 'screeen_id'
-      }
-    },
-    movie_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Movies',
-        key: 'movie_id'
+        key: 'screen_id'
       }
     },
     start_time: {
@@ -59,13 +51,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "screen_id" },
-        ]
-      },
-      {
-        name: "movie_id",
-        using: "BTREE",
-        fields: [
-          { name: "movie_id" },
         ]
       },
     ]
