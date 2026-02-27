@@ -35,12 +35,12 @@ module.exports = function(sequelize, DataTypes) {
     isDeleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: 1
+      defaultValue: 0
     },
     paid_at: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: "2026-02-27 06:54:11"
+      defaultValue: "2026-02-27 08:53:30"
     }
   }, {
     sequelize,

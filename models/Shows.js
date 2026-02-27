@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
     isDeleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: 1
+      defaultValue: 0
     }
   }, {
     sequelize,

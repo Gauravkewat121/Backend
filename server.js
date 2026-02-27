@@ -1,9 +1,20 @@
-const express = require('express');
 require('dotenv').config();
+const express = require('express');
+
 const sequelize = require('./config/db');
 
-const PORT = process.env.PORT || 4000;
+const userRoutes = require('./routes/userRoutes');
+const movieRoutes = require('./routes/movieRoutes');
+const theaterRouter = require('./routes/theaterRoutes');
+
 const app = express();
+const PORT = process.env.PORT || 4000;
+
+app.use(express.json());
+
+app.use('/api/user',userRoutes);
+app.use('/api/movie',movieRoutes);
+app.use('/api/theater',theaterRouter);
 
 sequelize.authenticate()
 .then(()=>{
