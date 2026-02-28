@@ -3,8 +3,9 @@ const express = require('express');
 
 const sequelize = require('./config/db');
 
-const userRoutes = require('./routes/userRoutes');
-const movieRoutes = require('./routes/movieRoutes');
+const cityRouter = require('./routes/cityRoutes');
+const userRouter = require('./routes/userRoutes');
+const movieRouter = require('./routes/movieRoutes');
 const theaterRouter = require('./routes/theaterRoutes');
 
 const app = express();
@@ -12,8 +13,9 @@ const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 
-app.use('/api/user',userRoutes);
-app.use('/api/movie',movieRoutes);
+app.use('/api/city',cityRouter);
+app.use('/api/user',userRouter);
+app.use('/api/movie',movieRouter);
 app.use('/api/theater',theaterRouter);
 
 sequelize.authenticate()

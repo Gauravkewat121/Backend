@@ -44,6 +44,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: 0
+    },
+    city_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Cities',
+        key: 'city_id'
+      }
     }
   }, {
     sequelize,
@@ -64,6 +72,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "owner_id" },
+        ]
+      },
+      {
+        name: "Theaters_city_id_foreign_idx",
+        using: "BTREE",
+        fields: [
+          { name: "city_id" },
         ]
       },
     ]

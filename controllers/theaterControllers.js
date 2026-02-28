@@ -21,19 +21,17 @@ exports.getTheater = async (req, res) => {
 exports.getAllTheaters = async (req, res) => {
 
     try {
+        if(req.user.role != 'admin') return res.status(401).send('you are not permitted');
         let pageno = parseInt(req.query.pageno) || 1;
 
         const limit = parseInt(req.query.limit) || 10;
 
         const offset = (pageno - 1) * limit;
 
-        const theater = await Theaters.findAll({ order: [['createdAt', 'DESC']], limit, offset, attributes: { exclude: ['isDeleted', 'deletedAt'] } });
-
-        if (!theater.length) {
-            res.status(404).send('Theaters not presents yet!');
-        } else {
-            res.status(200).send(theater);
-        }
+        const theater = await Theaters.findAll({ order: [['createdAt', 'DESC']],where:{isDeleted:0}, limit, offset, attributes: { exclude: ['isDeleted', 'deletedAt'] } });
+        const count = await Theaters.count({ where: { isDeleted: false } });
+        const totalPages = Math.ceil(count / limit);
+        res.status(200).json({ theater, currentPage: pageno, totalPages });
 
     } catch (err) {
         res.status(500).send(err.message);
@@ -43,8 +41,10 @@ exports.getAllTheaters = async (req, res) => {
 exports.createTheater = async (req, res) => {
 
     try {
+        const {city_id} = req.query;
         const { name, address, opening_time, closing_time } = req.body;
-        if (!(req.user.role != 'vendor' && req.user.role != 'admin')) {
+
+        if (req.user.role != 'vendor' && req.user.role != 'admin') {
             return res.status(401).send('you are not permitted');
         }
         const existingTheater = await Theaters.findOne({ where: { owner_id: req.user.user_id, name, address, isDeleted: 0 } })
@@ -52,7 +52,7 @@ exports.createTheater = async (req, res) => {
         if (existingTheater) {
             res.status(201).send({ message: 'Theater already exists!' });
         } else {
-            let theater = await Theaters.create(req.body);
+            let theater = await Theaters.create({...req.body,owner_id:req.user.user_id,city_id});
             res.status(200).send({ message: 'Theater created successfully!', theater });
         }
     } catch (err) {
@@ -65,12 +65,13 @@ exports.updateTheater = async (req, res) => {
     try {
         const { theater_id } = req.params;
 
-        const theater = await Theaters.findOne({ where: { theater_id, isDeleted: 0 } });
+        let theater = await Theaters.findOne({ where: { theater_id, isDeleted: 0 } });
         if (!theater) {
             res.status(404).send('Resource not found');
         }
         else if (theater.owner_id == req.user.user_id || req.user.role == 'admin') {
-            theater = await theater.update(req.body);
+
+            await theater.update(req.body);
             res.status(200).send({ theater, message: 'successfully updated!' });
         }
         else {

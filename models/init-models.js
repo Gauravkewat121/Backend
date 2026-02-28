@@ -28,6 +28,8 @@ function initModels(sequelize) {
 
   Payments.belongsTo(Bookings, { as: "booking", foreignKey: "booking_id"});
   Bookings.hasMany(Payments, { as: "Payments", foreignKey: "booking_id"});
+  Theaters.belongsTo(Cities, { as: "city", foreignKey: "city_id"});
+  Cities.hasMany(Theaters, { as: "Theaters", foreignKey: "city_id"});
   Bookings.belongsTo(Movies, { as: "movie", foreignKey: "movie_id"});
   Movies.hasMany(Bookings, { as: "Bookings", foreignKey: "movie_id"});
   Feedbacks.belongsTo(Movies, { as: "movie", foreignKey: "movie_id"});
