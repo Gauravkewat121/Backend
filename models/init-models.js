@@ -7,8 +7,8 @@ var _Movies = require("./Movies");
 var _Payments = require("./Payments");
 var _Screens = require("./Screens");
 var _Seats = require("./Seats");
+var _SequelizeData = require("./SequelizeData");
 var _SequelizeMeta = require("./SequelizeMeta");
-var _Shows = require("./Shows");
 var _Theaters = require("./Theaters");
 var _Users = require("./Users");
 
@@ -21,8 +21,8 @@ function initModels(sequelize) {
   var Payments = _Payments(sequelize, DataTypes);
   var Screens = _Screens(sequelize, DataTypes);
   var Seats = _Seats(sequelize, DataTypes);
+  var SequelizeData = _SequelizeData(sequelize, DataTypes);
   var SequelizeMeta = _SequelizeMeta(sequelize, DataTypes);
-  var Shows = _Shows(sequelize, DataTypes);
   var Theaters = _Theaters(sequelize, DataTypes);
   var Users = _Users(sequelize, DataTypes);
 
@@ -30,6 +30,8 @@ function initModels(sequelize) {
   Bookings.hasMany(Payments, { as: "Payments", foreignKey: "booking_id"});
   Theaters.belongsTo(Cities, { as: "city", foreignKey: "city_id"});
   Cities.hasMany(Theaters, { as: "Theaters", foreignKey: "city_id"});
+  Seats.belongsTo(MovieTheaters, { as: "MT", foreignKey: "MT_id"});
+  MovieTheaters.hasMany(Seats, { as: "Seats", foreignKey: "MT_id"});
   Bookings.belongsTo(Movies, { as: "movie", foreignKey: "movie_id"});
   Movies.hasMany(Bookings, { as: "Bookings", foreignKey: "movie_id"});
   Feedbacks.belongsTo(Movies, { as: "movie", foreignKey: "movie_id"});
@@ -38,16 +40,12 @@ function initModels(sequelize) {
   Movies.hasMany(MovieTheaters, { as: "MovieTheaters", foreignKey: "movie_id"});
   MovieTheaters.belongsTo(Screens, { as: "screen", foreignKey: "screen_id"});
   Screens.hasMany(MovieTheaters, { as: "MovieTheaters", foreignKey: "screen_id"});
-  Seats.belongsTo(Screens, { as: "screen", foreignKey: "screen_id"});
-  Screens.hasMany(Seats, { as: "Seats", foreignKey: "screen_id"});
   Bookings.belongsTo(Seats, { as: "seat", foreignKey: "seat_id"});
   Seats.hasMany(Bookings, { as: "Bookings", foreignKey: "seat_id"});
-  Bookings.belongsTo(Shows, { as: "show", foreignKey: "show_id"});
-  Shows.hasMany(Bookings, { as: "Bookings", foreignKey: "show_id"});
-  MovieTheaters.belongsTo(Shows, { as: "show", foreignKey: "show_id"});
-  Shows.hasMany(MovieTheaters, { as: "MovieTheaters", foreignKey: "show_id"});
   MovieTheaters.belongsTo(Theaters, { as: "theater", foreignKey: "theater_id"});
   Theaters.hasMany(MovieTheaters, { as: "MovieTheaters", foreignKey: "theater_id"});
+  Screens.belongsTo(Theaters, { as: "theater", foreignKey: "theater_id"});
+  Theaters.hasMany(Screens, { as: "Screens", foreignKey: "theater_id"});
   Bookings.belongsTo(Users, { as: "user", foreignKey: "user_id"});
   Users.hasMany(Bookings, { as: "Bookings", foreignKey: "user_id"});
   Feedbacks.belongsTo(Users, { as: "user", foreignKey: "user_id"});
@@ -64,8 +62,8 @@ function initModels(sequelize) {
     Payments,
     Screens,
     Seats,
+    SequelizeData,
     SequelizeMeta,
-    Shows,
     Theaters,
     Users,
   };

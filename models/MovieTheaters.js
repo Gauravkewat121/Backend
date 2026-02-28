@@ -1,6 +1,11 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('MovieTheaters', {
+    MT_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
     movie_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -17,14 +22,6 @@ module.exports = function(sequelize, DataTypes) {
         key: 'theater_id'
       }
     },
-    show_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Shows',
-        key: 'show_id'
-      }
-    },
     screen_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -37,13 +34,21 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: 0
-    }
+    },
   }, {
     sequelize,
     tableName: 'MovieTheaters',
     timestamps: true,
     paranoid: true,
     indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "MT_id" },
+        ]
+      },
       {
         name: "movie_id",
         using: "BTREE",
@@ -56,13 +61,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "theater_id" },
-        ]
-      },
-      {
-        name: "show_id",
-        using: "BTREE",
-        fields: [
-          { name: "show_id" },
         ]
       },
       {
