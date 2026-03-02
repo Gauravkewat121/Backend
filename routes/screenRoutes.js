@@ -6,5 +6,6 @@ router.post('/create/:theater_id',userAuth,screenControllers.addScreens);
 
 router.put('/update/:screen_id',userAuth,screenControllers.updateScreens);
 
+router.delete('/delete/:screen_id',userAuth,screenControllers.deleteScreen);
 
 module.exports = router;

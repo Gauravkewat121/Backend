@@ -44,7 +44,7 @@ exports.createTheater = async (req, res) => {
         const {city_id} = req.query;
         const { name, address, opening_time, closing_time } = req.body;
 
-        if (req.user.role != 'vendor' && req.user.role != 'admin') {
+        if (req.user.role == 'user') {
             return res.status(401).send('you are not permitted');
         }
         const existingTheater = await Theaters.findOne({ where: { owner_id: req.user.user_id, name, address, isDeleted: 0 } })

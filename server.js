@@ -7,7 +7,6 @@ const cityRouter = require('./routes/cityRoutes');
 const userRouter = require('./routes/userRoutes');
 const movieRouter = require('./routes/movieRoutes');
 const theaterRouter = require('./routes/theaterRoutes');
-
 const screenRouter = require('./routes/screenRoutes');
 
 const app = express();
