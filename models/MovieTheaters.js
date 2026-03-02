@@ -1,11 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('MovieTheaters', {
-    MT_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true
-    },
     movie_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -35,6 +30,19 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
+    MT_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
+    price: {
+      type: DataTypes.DECIMAL(10,0),
+      allowNull: true
+    },
+    start_time: {
+      type: DataTypes.STRING(45),
+      allowNull: true
+    }
   }, {
     sequelize,
     tableName: 'MovieTheaters',

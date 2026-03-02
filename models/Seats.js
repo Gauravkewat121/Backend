@@ -7,28 +7,31 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    MT_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'MovieTheaters',
-        key: 'MT_id'
-      }
-    },
     seat_number: {
       type: DataTypes.STRING(255),
       allowNull: false
-    },
-    is_booked: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: 0
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: 0
     },
+    screen_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Screens',
+        key: 'screen_id'
+      }
+    },
+    seat_type: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    price: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    }
   }, {
     sequelize,
     tableName: 'Seats',
@@ -44,10 +47,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "Seats_MT_id_foreign_idx",
+        name: "Seats_screen_id_foreign_idx",
         using: "BTREE",
         fields: [
-          { name: "MT_id" },
+          { name: "screen_id" },
         ]
       },
     ]

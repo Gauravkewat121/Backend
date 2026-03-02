@@ -27,6 +27,10 @@ module.exports = function(sequelize, DataTypes) {
         model: 'Theaters',
         key: 'theater_id'
       }
+    },
+    screen_type: {
+      type: DataTypes.STRING(255),
+      allowNull: false
     }
   }, {
     sequelize,
