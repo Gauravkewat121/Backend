@@ -1,15 +1,23 @@
 const { Theaters } = require('../models');
+const redisClient = require('../config/redis');
 
 exports.getTheater = async (req, res) => {
 
     try {
         const { theater_id } = req.params;
 
-        const theater = await Theaters.findOne({ where: { theater_id, isDeleted: 0 }, attributes: { exclude: ['isDeleted', 'deletedAt'] } });
+        const cachedTheater = await redisClient.get(`get-theater-${theater_id}`);
+
+        if(cachedTheater){
+            console.log('Data from Redis');
+            return res.status(200).json(JSON.parse(cachedTheater));
+        }
+        const theater = await Theaters.findOne({ where: { theater_id, isDeleted: 0 }, attributes: { exclude: ['isDeleted', 'deletedAt','status','holiday'] } });
 
         if (!theater) {
             res.status(404).send('Resource not found');
         } else {
+            await redisClient.setEx(`get-theater-${theater_id}`,60*2,JSON.stringify(theater));
             res.status(200).send(theater);
         }
 
@@ -28,10 +36,18 @@ exports.getAllTheaters = async (req, res) => {
 
         const offset = (pageno - 1) * limit;
 
-        const theater = await Theaters.findAll({ order: [['createdAt', 'DESC']],where:{isDeleted:0}, limit, offset, attributes: { exclude: ['isDeleted', 'deletedAt'] } });
+        const cachedTheater = await redisClient.get(`get-all-theaters-${pageno}-${limit}`);
+
+        if(cachedTheater){
+            console.log('Data from Redis');
+            return res.status(200).json(JSON.parse(cachedTheater));
+        }
+
+        const theaters = await Theaters.findAll({ order: [['createdAt', 'DESC']],where:{isDeleted:0}, limit, offset, attributes: { exclude: ['isDeleted', 'deletedAt'] } });
         const count = await Theaters.count({ where: { isDeleted: false } });
         const totalPages = Math.ceil(count / limit);
-        res.status(200).json({ theater, currentPage: pageno, totalPages });
+        await redisClient.setEx(`get-all-theaters-${pageno}-${limit}`,60*2,JSON.stringify({theaters, currentPage: pageno, totalPages}));
+        res.status(200).json({ theaters, currentPage: pageno, totalPages });
 
     } catch (err) {
         res.status(500).send(err.message);

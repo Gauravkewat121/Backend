@@ -31,6 +31,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: 0
+    },
+    comment: {
+      type: DataTypes.STRING(45),
+      allowNull: true
     }
   }, {
     sequelize,

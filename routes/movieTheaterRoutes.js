@@ -4,7 +4,9 @@ const movieTheaterControllers = require('../controllers/movieTheaterControllers'
 
 router.post('/create',userAuth,movieTheaterControllers.addMovieIntoTheater);
 
-router.get('/get-movies/:movie_id/:theater_id',userAuth,movieTheaterControllers.getMoviesOfTheater);
+router.get('/get-movies/:theater_id',userAuth,movieTheaterControllers.getMoviesOfTheater)
+
+router.get('/get-movie/:movie_id/:theater_id',userAuth,movieTheaterControllers.getMovieOfTheater);
 
 router.put('/update/:MT_id',userAuth,movieTheaterControllers.updateMovieIntoTheater);
 

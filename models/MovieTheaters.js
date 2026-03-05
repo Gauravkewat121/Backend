@@ -1,6 +1,12 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('MovieTheaters', {
+    MT_id: {
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
     movie_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -25,17 +31,6 @@ module.exports = function(sequelize, DataTypes) {
         key: 'screen_id'
       }
     },
-    isDeleted: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: 0
-    },
-    MT_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
     price: {
       type: DataTypes.DECIMAL(10,0),
       allowNull: true
@@ -43,6 +38,11 @@ module.exports = function(sequelize, DataTypes) {
     start_time: {
       type: DataTypes.STRING(45),
       allowNull: true
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,

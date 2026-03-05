@@ -1,5 +1,7 @@
 
 const { Movies, Theaters, MovieTheaters } = require('../models');
+const redisClient = require('../config/redis');
+const { Json } = require('sequelize/lib/utils');
 
 exports.addMovieIntoTheater = async (req, res) => {
 
@@ -38,7 +40,7 @@ exports.updateMovieIntoTheater = async (req, res) => {
         const { MT_id } = req.params;
         const { movie_id, theater_id } = req.body;
 
-        const theater_movie = await MovieTheaters.findOne({ where: { isDeleted: 0, movie_id, theater_id } });
+        const theater_movie = await MovieTheaters.findOne({ where: { isDeleted: 0, MT_id} });
 
         if (!theater_movie) {
             res.status(404).send('Resource not found');
@@ -90,13 +92,45 @@ exports.deleteMovieIntoTheater = async (req, res) => {
 
 }
 
-exports.getMoviesOfTheater = async (req, res) => {
+exports.getMovieOfTheater = async (req, res) => {
 
     try {
         const { movie_id, theater_id } = req.params;
 
-        const theater_movies = await MovieTheaters.findAll({ where: { isDeleted: 0, movie_id, theater_id } });
+        const cacheMovies = await redisClient.get(`${theater_id}-${movie_id}`);
 
+        if(cacheMovies) {
+            console.log('Data from Redis');
+            return res.status(200).json(JSON.parse(cacheMovies));
+        }
+
+        const theater_movies = await MovieTheaters.findAll({ where: { isDeleted: 0, movie_id, theater_id } });
+        if(theater_movies.length != 0) {
+            await redisClient.setEx(`${theater_id}-${movie_id}`,60*2,JSON.stringify(theater_movies));
+        }
+        res.status(200).send(theater_movies);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+
+exports.getMoviesOfTheater = async (req, res) => {
+
+    try {
+        const { theater_id } = req.params;
+
+        const cacheMovies = await redisClient.get(`MOVIES-${theater_id}`);
+
+        if(cacheMovies) {
+            console.log('Data from Redis');
+            return res.status(200).json(JSON.parse(cacheMovies));
+        }
+
+        const theater_movies = await MovieTheaters.findAll({ where: { isDeleted: 0, theater_id } });
+        if(theater_movies.length != 0) {
+            await redisClient.setEx(`MOVIES-${theater_id}`,60*2,JSON.stringify(theater_movies));
+        }
         res.status(200).send(theater_movies);
     } catch (err) {
         res.status(500).send(err.message);

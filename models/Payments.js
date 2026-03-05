@@ -40,7 +40,7 @@ module.exports = function(sequelize, DataTypes) {
     paid_at: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: "2026-02-28 06:52:30"
+      defaultValue: "2026-03-05 10:24:37"
     }
   }, {
     sequelize,

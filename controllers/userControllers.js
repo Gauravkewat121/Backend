@@ -1,5 +1,6 @@
 const { Users } = require("../models");
 const bcrypt = require("bcrypt");
+const redisClient = require('../config/redis');
 const { generateToken } = require("../utils/jwt");
 
 exports.signUp = async (req, res) => {
@@ -50,12 +51,22 @@ exports.login = async (req, res) => {
 exports.getUser = async (req, res) => {
     try {
         const id = req.user.user_id;
+        const cachedUser = await redisClient.get(`user-${id}`);
+        if(cachedUser){
+            console.log("Data from Redis");
+            return res.status(200).json(JSON.parse(cachedUser));
+        }
         const user = await Users.findOne({
             where: { user_id: id, isDeleted: false },
             attributes: { exclude: ["password", "isDeleted", "deletedAt"] },
         });
-        if (!user) return res.status(404).json({ message: "user not found" });
-        return res.status(200).json(user);
+        if (!user) {
+            res.status(404).json({ message: "user not found" });
+        }
+        else{
+            await redisClient.setEx(`user-${id}`,60*2,JSON.stringify(user));
+            res.status(200).json(user);
+        }
     } catch (error) {
         return res.status(500).json(error.message);
     }

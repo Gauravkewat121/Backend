@@ -23,6 +23,18 @@ module.exports = function(sequelize, DataTypes) {
         key: 'seat_id'
       }
     },
+    MT_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'MovieTheaters',
+        key: 'MT_id'
+      }
+    },
+    total_amount: {
+      type: DataTypes.DECIMAL(10,0),
+      allowNull: true
+    },
     booking_time: {
       type: DataTypes.DATE,
       allowNull: false
@@ -36,18 +48,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: 0
-    },
-    MT_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'MovieTheaters',
-        key: 'MT_id'
-      }
-    },
-    total_amount: {
-      type: DataTypes.DECIMAL(10,0),
-      allowNull: true
     }
   }, {
     sequelize,
@@ -78,7 +78,7 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "Bookings_MT_id_foreign_idx",
+        name: "MT_id",
         using: "BTREE",
         fields: [
           { name: "MT_id" },

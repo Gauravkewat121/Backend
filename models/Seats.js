@@ -7,8 +7,20 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
+    screen_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Screens',
+        key: 'screen_id'
+      }
+    },
     seat_number: {
       type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    price: {
+      type: DataTypes.FLOAT,
       allowNull: false
     },
     isDeleted: {
@@ -16,20 +28,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    screen_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Screens',
-        key: 'screen_id'
-      }
-    },
     seat_type: {
       type: DataTypes.STRING(255),
-      allowNull: false
-    },
-    price: {
-      type: DataTypes.FLOAT,
       allowNull: false
     }
   }, {
@@ -47,7 +47,7 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "Seats_screen_id_foreign_idx",
+        name: "screen_id",
         using: "BTREE",
         fields: [
           { name: "screen_id" },

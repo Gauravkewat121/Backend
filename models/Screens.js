@@ -7,19 +7,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    screen_no: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    total_seats: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    isDeleted: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: 0
-    },
     theater_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -28,9 +15,22 @@ module.exports = function(sequelize, DataTypes) {
         key: 'theater_id'
       }
     },
+    screen_no: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    total_seats: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     screen_type: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,
@@ -47,7 +47,7 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "Screens_theater_id_foreign_idx",
+        name: "theater_id",
         using: "BTREE",
         fields: [
           { name: "theater_id" },
