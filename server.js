@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 
 const sequelize = require('./config/db');
-
+const redisClient = require('./config/redis');
 const cityRouter = require('./routes/cityRoutes');
 const userRouter = require('./routes/userRoutes');
 const movieRouter = require('./routes/movieRoutes');
@@ -23,8 +23,15 @@ app.use('/api/screen',screenRouter);
 sequelize.authenticate()
 .then(()=>{
     console.log('DB connected successfully!');
-    app.listen(PORT,()=>{
-        console.log('server is running on ',PORT);
+    redisClient.connect()
+    .then(()=>{
+        console.log('Redis Connected!');
+        app.listen(PORT,()=>{
+            console.log('server is running on ',PORT);
+        });
+    })
+    .catch((err)=>{
+        console.log(err);
     });
 })
 .catch((err)=>console.log(err));

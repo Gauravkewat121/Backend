@@ -13,6 +13,6 @@ router.get('/get-theater/:theater_id',userAuth,theaterController.getTheater);
 
 router.get('/get-all-theaters',userAuth,theaterController.getAllTheaters);
 
-router.use('/',movieTheaterRouter);
+router.use('/shows',movieTheaterRouter);
 
 module.exports = router;

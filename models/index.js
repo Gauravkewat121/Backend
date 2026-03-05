@@ -4,4 +4,4 @@ const initModels = require('./init-models.js');
 
 const models = initModels(sequelize);
 
-module.exports = {...models,sequelize};
+module.exports = models;

@@ -33,7 +33,8 @@ module.exports = function(sequelize, DataTypes) {
     MT_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     price: {
       type: DataTypes.DECIMAL(10,0),
