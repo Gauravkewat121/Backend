@@ -1,4 +1,3 @@
-
 const { Bookings, Payments } = require('../models');
 const sequelize = require("../config/db");
 
@@ -27,32 +26,32 @@ async function processPayment(paymentDetails) {
 }
 
 
-async function createBookingAndProcessPayment(userId, showId, seat_id, paymentDetails) {
+async function createBookingAndProcessPayment(userId, MT_id, seat_id,total_amount, paymentDetails) {
     const transaction = await sequelize.transaction();
 
     try {
-        const is_Seat = await is_seat_available(showId, seat_id);
+        const is_Seat = await is_seat_available(MT_id, seat_id);
         if (is_Seat) {
             throw new Error('seat already Booked !!!!!');
         }
 
 
-        const totalAmount = 1000;
+        
 
         const Booking = await Bookings.create({
             user_id: userId,
-            MT_id: showId,
-            total_amount: totalAmount,
+            MT_id,
+            total_amount,
             seat_id,
             status: 'wait-list',
             booking_time: Date.now()
         });
         const Payment = await Payments.create({
             booking_id: Booking.booking_id,
-            amount: totalAmount,
+            amount: total_amount,
             payment_status: 'pending',
-            payment_method: paymentDetails.method,
-            transaction_id: paymentDetails.transactionId
+            payment_method: paymentDetails.payment_method,
+            transaction_id: paymentDetails.transaction_id
         }, { transaction });
 
         const paymentResult = await processPayment(paymentDetails);
@@ -83,10 +82,10 @@ async function createBookingAndProcessPayment(userId, showId, seat_id, paymentDe
 
 
 exports.bookingAndPayment = async (req, res) => {
-    const { showId, seat_id, paymentDetails } = req.body;
+    const { MT_id, seat_id,total_amount, paymentDetails } = req.body;
 
     try {
-        const result = await createBookingAndProcessPayment(req.user.user_id, showId, seat_id, paymentDetails);
+        const result = await createBookingAndProcessPayment(req.user.user_id, MT_id, seat_id,total_amount, paymentDetails);
         res.status(200).json({
             bookingId: result.bookingId,
             paymentStatus: result.paymentStatus,
@@ -105,6 +104,7 @@ exports.cancelBooking = async (req, res) => {
     try {
         const { booking_id } = req.params;
         const Booking = await Bookings.findOne({ where: { booking_id, user_id: req.user.user_id, isDeleted: false } })
+        console.log(booking_id,Booking);
         if (!Booking) return res.status(404).json({ msg: "booking not found !!!" })
         await Booking.update({ status: 'cancelled' })
         res.status(200).json({ msg: "booking cancelled !!" })

@@ -1,8 +1,6 @@
 const sequelize = require('../config/db');
-const { Sequelize, QueryTypes } = require('sequelize');
+const { Sequelize,QueryTypes } = require('sequelize');
 const redisClient = require('../config/redis');
-const { Users, Theaters, MovieTheaters, Movies, Cities, Bookings, Screens } = require('../models');
-const { Json } = require('sequelize/lib/utils');
 
 
 // 1. Generate a report that shows the Top 5 movies that sold the highest number of tickets.
@@ -49,16 +47,16 @@ exports.monthly_total_revenue_of_plateform = async (req, res) => {
         if (revenue) {
             res.status(200).json(JSON.parse(revenue));
         } else {
-
+            console.log("****************enter*************************");
             const revenueDetails = await sequelize.query(
-                `select date_format(booking_time,'%Y-%M') as yearMonth , count(total_amount)as totalAmount
-    from Bookings 
-    where status = 'booked' and isDeleted = 0
-    group by date_format(booking_time,'%Y-%M');`,
+                `SELECT date_format(b.booking_time,'%Y-%M') as yearMonth , COUNT(b.total_amount) as totalAmount
+                 FROM Bookings b
+                 WHERE b.status = 'booked' and b.isDeleted = 0
+                 GROUP BY yearMonth`,
                 {
                     type: Sequelize.QueryTypes.SELECT
                 }
-            );
+            )
 
             await redisClient.setEx(`monthly_total_revenue_of_plateform`, JSON.stringify(revenueDetails));
             res.status(200).send(revenueDetails)

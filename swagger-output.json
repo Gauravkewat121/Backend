@@ -93,6 +93,7 @@
                   "example": "gauravkew121@gmail.com"
                 },
                 "phone": {
+                  "type": "string",
                   "example": "6266634065"
                 },
                 "role": {
@@ -1411,6 +1412,99 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/booking/create": {
+      "post": {
+        "description": "",
+        "tags":["Booking"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "MT_id": {
+                  "example": 231
+                },
+                "seat_id": {
+                  "example": 87
+                },
+                "total_amount":{
+                   "example": 300
+                },
+               "paymentDetails": {
+                  "type": "object",
+                  "properties": {
+                    "payment_method": {
+                      "type": "string",
+                      "example": "UPI"
+                    },
+                    "transaction_id": {
+                      "type": "string",
+                      "example": "TXN123456"
+                    },
+                    "amount": {
+                      "type": "number",
+                      "example": 450
+                    },
+                    "payment_status": {
+                      "type": "string",
+                      "example": "pending"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/booking/cancel/{booking_id}": {
+      "post": {
+        "description": "",
+        "tags":["Booking"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }

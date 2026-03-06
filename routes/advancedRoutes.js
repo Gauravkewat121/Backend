@@ -11,7 +11,7 @@ router.get('/shows-booked',userAuth,advancedControllers.shows_booked_90_or_more)
 
 router.get('/users-bookings',userAuth,advancedControllers.users_booked_3_more_tickets);
 
-router.get('theater-revenue',userAuth,advancedControllers.theaters_revenue);
+router.get('/theater-revenue',userAuth,advancedControllers.theaters_revenue);
 
 router.get('/most-prefered-seat',userAuth,advancedControllers.most_prefered_seat);
 

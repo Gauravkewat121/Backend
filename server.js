@@ -9,6 +9,7 @@ const movieRouter = require('./routes/movieRoutes');
 const theaterRouter = require('./routes/theaterRoutes');
 const screenRouter = require('./routes/screenRoutes');
 const advancedRouter = require('./routes/advancedRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require("./swagger-output.json");
@@ -25,6 +26,7 @@ app.use('/api/movie',movieRouter);
 app.use('/api/theater',theaterRouter);
 app.use('/api/screen',screenRouter);
 app.use('/api/advanced',advancedRouter);
+app.use('/booking',bookingRouter);
 
 sequelize.authenticate()
 .then(()=>{
