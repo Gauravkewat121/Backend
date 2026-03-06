@@ -562,10 +562,10 @@
                   "example": "mumbai powder gali"
                 },
                 "opening_time": {
-                  "example": "9:00:00"
+                  "example": "9:00"
                 },
                 "closing_time": {
-                  "example": "10:00:00"
+                  "example": "10:00"
                 }
               }
             }
@@ -619,10 +619,10 @@
                   "example": "mumbai powder gali"
                 },
                 "opening_time": {
-                  "example": "9:00:00"
+                  "example": "9:00"
                 },
                 "closing_time": {
-                  "example": "10:00:00"
+                  "example": "10:00"
                 }
               }
             }
@@ -774,7 +774,7 @@
                 },
                 "start_time":{
                   "type": "date",
-                  "example":"10:00:00"
+                  "example":"2026-04-01 18:00"
                 }
               }
             }
@@ -901,7 +901,7 @@
                 },
                 "start_time":{
                   "type": "date",
-                  "example":"10:00:00"
+                  "example":"2002-02-10 21:00:00"
                 }
               }
             }
@@ -985,6 +985,9 @@
                 "total_seats": {
                   "type": "integer",
                   "example": 23
+                },
+                "screen_type":{
+                  "example": "IMax"
                 }
               }
             }
@@ -1032,6 +1035,9 @@
                 "total_seats": {
                   "type": "integer",
                   "example": 23
+                },
+                "screen_type":{
+                  "example": "IMax"
                 }
               }
             }
@@ -1272,7 +1278,7 @@
         }
       }
     },
-    "/api/advancedtheater-revenue": {
+    "/api/advanced/theater-revenue": {
       "get": {
         "description": "",
         "tags":["Advanced"],

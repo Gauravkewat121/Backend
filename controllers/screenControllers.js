@@ -6,7 +6,7 @@ exports.addScreens = async (req, res) => {
         const { theater_id } = req.params;
         const theater = await Theaters.findOne({ where: { theater_id, isDeleted: 0 } });
 
-        if (theater && (theater.owner_id == req.user.user_id || req.user.role == 'admin')) {
+        if (theater && (theater.owner_id == req.user.user_id)) {
             let screen = await Screens.create({ ...req.body, theater_id });
 
             res.status(200).send({ message: "Screen add successfully", screen });
@@ -24,6 +24,7 @@ exports.updateScreens = async (req, res) => {
     
     try {
         const { screen_id } = req.params;
+        console.log(screen_id,req.user.user_id)
         let screen = await Screens.findOne({ where: { screen_id, isDeleted: 0 },
             include : [
                 {
@@ -36,6 +37,7 @@ exports.updateScreens = async (req, res) => {
                 }
             ]
         });
+
 
         if (screen ) {
 

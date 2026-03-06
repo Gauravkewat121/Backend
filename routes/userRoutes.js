@@ -2,7 +2,7 @@ const userControllers = require('../controllers/userControllers');
 const router = require('express').Router();
 const userAuth = require('../middlewares/userAuth');
 const validate = require('../utils/joi');
-const userSchema = require('../validation/userValidation');
+const {userSchema,userUpdate} = require('../validation/userValidation');
 
 router.post('/sign-up',validate(userSchema),userControllers.signUp);
 
@@ -10,6 +10,6 @@ router.post('/login',userControllers.login);
 
 router.get('/get-user/:id',userAuth,userControllers.getUser);
 
-router.put('/update',userAuth,validate(userSchema),userControllers.userUpdate);
+router.put('/update',userAuth,validate(userUpdate),userControllers.userUpdate);
 
 module.exports = router;

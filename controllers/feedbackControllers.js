@@ -5,7 +5,7 @@ exports.createFeedback = async (req, res) => {
     try {
         const {movie_id} = req.params;
         
-        const feedback = await Feedbacks.create(req.user.user_id, movie_id,...req.body);
+    const feedback = await Feedbacks.create({user_id:req.user.user_id, movie_id,...req.body});
         res.status(200).json({ message: 'thanks for rating' });
     } catch (error) {
         res.status(500).json(error.message)

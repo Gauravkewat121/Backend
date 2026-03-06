@@ -49,19 +49,19 @@ exports.monthly_total_revenue_of_plateform = async (req, res) => {
         } else {
             console.log("****************enter*************************");
             const revenueDetails = await sequelize.query(
-                `SELECT date_format(b.booking_time,'%Y-%M') as yearMonth , COUNT(b.total_amount) as totalAmount
-                 FROM Bookings b
-                 WHERE b.status = 'booked' and b.isDeleted = 0
-                 GROUP BY yearMonth`,
+                `select date_format(booking_time,'%Y-%M') as yearMonth , sum(total_amount)as totalAmount
+		         from Bookings 
+		         where status = 'booked' and isDeleted = 0
+		        group by yearMonth;`,
                 {
                     type: Sequelize.QueryTypes.SELECT
                 }
             )
-
-            await redisClient.setEx(`monthly_total_revenue_of_plateform`, JSON.stringify(revenueDetails));
+            await redisClient.setEx(`monthly_total_revenue_of_plateform`,60, JSON.stringify(revenueDetails));
             res.status(200).send(revenueDetails)
         }
     } catch (err) {
+        console.log(err,"helo")
         res.status(500).send(err.message);
     }
 
@@ -129,7 +129,7 @@ exports.users_booked_3_more_tickets = async (req, res) => {
                     type: Sequelize.QueryTypes.SELECT
                 }
             );
-            await redisClient.setEx('users_booked_3_more_tickets', JSON.stringify(users));
+            await redisClient.setEx('users_booked_3_more_tickets',60, JSON.stringify(users));
             res.status(200).send(users);
         }
     } catch (err) {
@@ -243,7 +243,7 @@ exports.peak_booking_hours = async (req, res) => {
         } else {
 
             const users = await sequelize.query(
-                `select  date_format(booking_time,'%H') as hours ,count(date_format(booking_time,'%h')) usedHour
+                `select  date_format(booking_time,'%H') as hours ,count(date_format(booking_time,'%H')) usedHour
                 from  Bookings 
                 group by hours
                 order by usedHour desc;`,

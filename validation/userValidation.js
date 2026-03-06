@@ -23,6 +23,24 @@ const userSchema = Joi.object({
   dateOfBirth: Joi.date()
     .less('now')
     .required()
+    
 });
 
-module.exports = userSchema;
+
+const userUpdate = Joi.object({
+  name: Joi.string(),
+  email: Joi.string()
+    .email(),
+  phone: Joi.string()
+    .pattern(/^[0-9]{10}$/),
+
+  password: Joi.string()
+    .min(6)
+    .max(20),
+  role: Joi.string()
+    .valid('user', 'vendor'),
+  dateOfBirth: Joi.date()
+    .less('now'),
+})
+
+module.exports = {userSchema,userUpdate};

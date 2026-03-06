@@ -19,8 +19,28 @@ const showSchema = Joi.object({
     .required(),
 
   start_time: Joi.string()
-    .pattern(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)
-    .required()  // "2026-04-01 18:00:00"
+    .pattern(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01]) ([01]?\d|2[0-3]):[0-5]\d$/)
+    .required()  // "2026-04-01 18:00"
 });
 
-module.exports = showSchema;
+
+const showUpdate = Joi.object({
+     movie_id: Joi.number()
+    .integer(),
+
+  theater_id: Joi.number()
+    .integer(),
+
+  screen_id: Joi.number()
+    .integer(),
+
+  price: Joi.number()
+    .precision(0)
+    .positive(),
+
+  start_time: Joi.string()
+    .pattern(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01]) ([01]?\d|2[0-3]):[0-5]\d$/)  // "2026-04-01 18:00"
+});
+
+
+module.exports = {showSchema,showUpdate};

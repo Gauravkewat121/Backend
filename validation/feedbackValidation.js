@@ -3,13 +3,11 @@ const Joi = require('joi');
 const feedbackSchema = Joi.object({
   user_id: Joi.number()
     .integer()
-    .positive()
-    .required(),
+    .positive(),
 
   movie_id: Joi.number()
     .integer()
-    .positive()
-    .required(),
+    .positive(),
 
   rating: Joi.number()
     .integer()

@@ -6,7 +6,7 @@ function validate(schema) {
     const { error,value } = schema.validate(req.body);
 
     if (error) {
-      console.log(error.details[0].message)
+      console.log("**********ERROR")
       return res.status(400).json({
         message: error.details[0].message
       });

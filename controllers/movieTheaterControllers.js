@@ -2,6 +2,7 @@
 const { Movies, Theaters, MovieTheaters } = require('../models');
 const redisClient = require('../config/redis');
 const { Json } = require('sequelize/lib/utils');
+const { es } = require('faker/lib/locales');
 
 exports.addMovieIntoTheater = async (req, res) => {
 
@@ -104,11 +105,13 @@ exports.getMovieOfTheater = async (req, res) => {
             return res.status(200).json(JSON.parse(cacheMovies));
         }
 
-        const theater_movies = await MovieTheaters.findAll({ where: { isDeleted: 0, movie_id, theater_id } });
-        if(theater_movies.length != 0) {
+        const theater_movies = await MovieTheaters.findOne({ where: { isDeleted: 0, movie_id, theater_id } });
+        if(theater_movies) {
             await redisClient.setEx(`${theater_id}-${movie_id}`,60*2,JSON.stringify(theater_movies));
+            res.status(200).send(theater_movies);
+        }else{
+            res.status(404).send('Resource not found');
         }
-        res.status(200).send(theater_movies);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -130,8 +133,10 @@ exports.getMoviesOfTheater = async (req, res) => {
         const theater_movies = await MovieTheaters.findAll({ where: { isDeleted: 0, theater_id } });
         if(theater_movies.length != 0) {
             await redisClient.setEx(`MOVIES-${theater_id}`,60*2,JSON.stringify(theater_movies));
+            res.status(200).send(theater_movies);
+        }else{
+            res.status(404).send('Theater not found');
         }
-        res.status(200).send(theater_movies);
     } catch (err) {
         res.status(500).send(err.message);
     }

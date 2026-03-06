@@ -2,12 +2,12 @@ const router = require('express').Router();
 const seatRouter = require('./seatRoutes');
 const validate = require('../utils/joi');
 const userAuth = require('../middlewares/userAuth');
-const screenSchema = require('../validation/screenValidation');
+const {screenSchema,screenUpdate} = require('../validation/screenValidation');
 const screenControllers = require('../controllers/screenControllers');
 
 router.post('/create/:theater_id',userAuth,validate(screenSchema),screenControllers.addScreens);
 
-router.put('/update/:screen_id',userAuth,validate(screenSchema),screenControllers.updateScreens);
+router.put('/update/:screen_id',userAuth,validate(screenUpdate),screenControllers.updateScreens);
 
 router.delete('/delete/:screen_id',userAuth,screenControllers.deleteScreen);
 

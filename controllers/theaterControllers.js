@@ -110,7 +110,7 @@ exports.deleteTheater = async (req, res) => {
             res.status(404).send('Resource not found');
         }
         else if (req.user.role == 'admin' || theater.owner_id == req.user.user_id) {
-            await theater.update({ isDeleted: 1 ,status:'deactive'});
+            await theater.update({ isDeleted: 1 ,status:'inactive'});
             res.status(200).send('theater deleted successfully!');
         } else {
             res.status(200).send('You are not Permitted!');

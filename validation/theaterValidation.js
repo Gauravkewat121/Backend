@@ -2,8 +2,7 @@ const Joi = require('joi');
 
 const theaterSchema = Joi.object({
   city_id: Joi.number()
-    .integer()
-    .required(),
+    .integer(),
 
   name: Joi.string()
     .min(3)
@@ -16,15 +15,14 @@ const theaterSchema = Joi.object({
     .required(),
 
   owner_id: Joi.number()
-    .integer()
-    .required(),
+    .integer(),
 
   opening_time: Joi.string()
-    .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
+    .pattern(/^([01]?\d|2[0-3]):[0-5]\d$/)
     .required(),
 
   closing_time: Joi.string()
-    .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
+    .pattern(/^([01]?\d|2[0-3]):[0-5]\d$/)
     .required(),
 
   holiday: Joi.string()

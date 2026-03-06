@@ -82,10 +82,12 @@ exports.userUpdate = async (req, res) => {
             res.status(404).json({ message: "user not found" });
         }
         else {
+            console.log("hello",req.body)
             await user.update(req.body);
             res.status(200).send('profile update successfully');
         }
     } catch (error) {
+        console.log("hello",error)
         return res.status(500).json(error.message);
     }
 };
