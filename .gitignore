@@ -5,3 +5,6 @@ dist/
 seeders/
 migrations/
 sequelizerc.js
+data/
+data.json
+swagger.json

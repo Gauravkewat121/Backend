@@ -2,10 +2,12 @@ const router = require('express').Router();
 const userAuth = require('../middlewares/userAuth');
 const theaterController = require('../controllers/theaterControllers')
 const movieTheaterRouter = require('./movieTheaterRoutes');
+const validate = require('../utils/joi');
+const theaterSchema = require('../validation/theaterValidation');
 
-router.post('/create',userAuth,theaterController.createTheater);
+router.post('/create',userAuth,validate(theaterSchema),theaterController.createTheater);
 
-router.put('/update/:theater_id',userAuth,theaterController.updateTheater);
+router.put('/update/:theater_id',userAuth,validate(theaterSchema),theaterController.updateTheater);
 
 router.delete('/delete/:theater_id',userAuth,theaterController.deleteTheater);
 
