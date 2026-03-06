@@ -19,15 +19,34 @@
     }
   },
   "paths": {
-    "/api/city/add": {
+     "/api/city/add": {
       "post": {
         "description": "",
+        "tags": ["City"],
         "parameters": [
           {
             "name": "authorization",
             "in": "header",
             "type": "string"
-          }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Badwah"
+                },
+                "state": {
+                  "example": "M.P."
+                },
+                "country": {
+                  "example": "India"
+                }
+            }
+        }
+    }
         ],
         "responses": {
           "200": {
@@ -45,6 +64,7 @@
     "/api/city/get-all-cities": {
       "get": {
         "description": "",
+        "tags": ["City"],
         "responses": {
           "200": {
             "description": "OK"
@@ -58,6 +78,7 @@
     "/api/user/sign-up": {
       "post": {
         "description": "",
+        "tags": ["Auth"],
         "parameters": [
           {
             "name": "body",
@@ -66,22 +87,22 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "example": "Gaurav Kewat"
                 },
                 "email": {
-                  "example": "any"
+                  "example": "gauravkew121@gmail.com"
                 },
                 "phone": {
-                  "example": "any"
+                  "example": "6266634065"
                 },
                 "role": {
-                  "example": "any"
+                  "example": "user"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "@@@kewatji@@@@"
                 },
                 "dateOfBirth": {
-                  "example": "any"
+                  "example": "2005-02-11"
                 }
               }
             }
@@ -103,6 +124,7 @@
     "/api/user/login": {
       "post": {
         "description": "",
+        "tags": ["Auth"],
         "parameters": [
           {
             "name": "body",
@@ -111,10 +133,10 @@
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "example": "gauravkew121@gmail.com"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "@@@kewatji@@@@"
                 }
               }
             }
@@ -133,14 +155,21 @@
         }
       }
     },
-    "/api/user/get-user": {
+    "/api/user/get-user/{id}": {
       "get": {
         "description": "",
+        "tags": ["User"],
         "parameters": [
           {
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "example": 21
           }
         ],
         "responses": {
@@ -159,11 +188,39 @@
     "/api/user/update": {
       "put": {
         "description": "",
+        "tags": ["User"],
         "parameters": [
           {
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Gaurav Kewat"
+                },
+                "email": {
+                  "example": "gauravkew121@gmail.com"
+                },
+                "phone": {
+                  "example": "6266634065"
+                },
+                "role": {
+                  "example": "user"
+                },
+                "password": {
+                  "example": "@@@kewatji@@@@"
+                },
+                "dateOfBirth": {
+                  "example": "2005-02-11"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -182,16 +239,17 @@
     "/api/movie/get-movie/{movie_id}": {
       "get": {
         "description": "",
+        "tags":["Movie"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "movie_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -211,6 +269,7 @@
     "/api/movie/get-all-movies": {
       "get": {
         "description": "",
+        "tags":["Movie"],
         "parameters": [
           {
             "name": "pageno",
@@ -236,11 +295,44 @@
     "/api/movie/create": {
       "post": {
         "description": "",
+        "tags":["Movie"],
         "parameters": [
           {
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Bahubali"
+                },
+                "title": {
+                  "example": "title of movie"
+                },
+                "language": {
+                  "example": "hindi"
+                },
+                "genre": {
+                  "example": "sci-fi"
+                },
+                "duration_time": {
+                  "example": "145",
+                  "description": "duration in minutes"
+                },
+                "release_date": {
+                  "example": "2005-02-11"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "about movie"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -262,17 +354,18 @@
     "/api/movie/delete/{movie_id}": {
       "delete": {
         "description": "",
+        "tags":["Movie"],
         "parameters": [
-          {
-            "name": "movie_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "movie_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
           }
         ],
         "responses": {
@@ -297,17 +390,50 @@
     "/api/movie/update/{movie_id}": {
       "put": {
         "description": "",
+        "tags":["Movie"],
         "parameters": [
-          {
-            "name": "movie_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "movie_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Bahubali"
+                },
+                "title": {
+                  "example": "title of movie"
+                },
+                "language": {
+                  "example": "hindi"
+                },
+                "genre": {
+                  "example": "sci-fi"
+                },
+                "duration_time": {
+                  "example": "145",
+                  "description": "duration in minutes"
+                },
+                "release_date": {
+                  "example": "2005-02-11"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "about movie"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -332,7 +458,13 @@
     "/api/movie/feedbacks/create/{movie_id}": {
       "post": {
         "description": "",
+        "tags":["Feedback"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "movie_id",
             "in": "path",
@@ -340,9 +472,19 @@
             "type": "string"
           },
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "example": 3
+                },
+                "comment": {
+                  "example": "it is nice movie"
+                }  
+              }
+            }
           }
         ],
         "responses": {
@@ -361,16 +503,17 @@
     "/api/movie/feedbacks/delete/{feedback_id}/": {
       "delete": {
         "description": "",
+        "tags":["Feedback"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "feedback_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -393,6 +536,7 @@
     "/api/theater/create": {
       "post": {
         "description": "",
+        "tags":["Theater"],
         "parameters": [
           {
             "name": "authorization",
@@ -411,16 +555,16 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "example": "madhu millan"
                 },
                 "address": {
-                  "example": "any"
+                  "example": "mumbai powder gali"
                 },
                 "opening_time": {
-                  "example": "any"
+                  "example": "9:00:00"
                 },
                 "closing_time": {
-                  "example": "any"
+                  "example": "10:00:00"
                 }
               }
             }
@@ -448,17 +592,39 @@
     "/api/theater/update/{theater_id}": {
       "put": {
         "description": "",
+         "tags":["Theater"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "theater_id",
             "in": "path",
             "required": true,
             "type": "string"
           },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
+           {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "madhu millan"
+                },
+                "address": {
+                  "example": "mumbai powder gali"
+                },
+                "opening_time": {
+                  "example": "9:00:00"
+                },
+                "closing_time": {
+                  "example": "10:00:00"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -480,16 +646,17 @@
     "/api/theater/delete/{theater_id}": {
       "delete": {
         "description": "",
+        "tags":["Theater"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "theater_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -509,16 +676,17 @@
     "/api/theater/get-theater/{theater_id}": {
       "get": {
         "description": "",
+         "tags":["Theater"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "theater_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -538,6 +706,7 @@
     "/api/theater/get-all-theaters": {
       "get": {
         "description": "",
+         "tags":["Theater"],
         "parameters": [
           {
             "name": "authorization",
@@ -574,6 +743,7 @@
     "/api/theater/shows/create": {
       "post": {
         "description": "",
+        "tags":["Show"],
         "parameters": [
           {
             "name": "authorization",
@@ -587,10 +757,23 @@
               "type": "object",
               "properties": {
                 "movie_id": {
-                  "example": "any"
+                  "type": "integer",
+                  "example": 23
                 },
                 "theater_id": {
-                  "example": "any"
+                   "type": "integer",
+                  "example": 23
+                },
+                "screen_id": {
+                   "type": "integer",
+                  "example": 23
+                },
+                "price": {
+                  "example": 200
+                },
+                "start_time":{
+                  "type": "date",
+                  "example":"10:00:00"
                 }
               }
             }
@@ -615,16 +798,17 @@
     "/api/theater/shows/get-movies/{theater_id}": {
       "get": {
         "description": "",
+        "tags":["Show"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "theater_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -644,7 +828,13 @@
     "/api/theater/shows/get-movie/{movie_id}/{theater_id}": {
       "get": {
         "description": "",
+        "tags":["Show"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "movie_id",
             "in": "path",
@@ -655,11 +845,6 @@
             "name": "theater_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -679,16 +864,17 @@
     "/api/theater/shows/update/{MT_id}": {
       "put": {
         "description": "",
+        "tags":["Show"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "MT_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -698,10 +884,23 @@
               "type": "object",
               "properties": {
                 "movie_id": {
-                  "example": "any"
+                  "type": "integer",
+                  "example": 23
                 },
                 "theater_id": {
-                  "example": "any"
+                   "type": "integer",
+                  "example": 23
+                },
+                "screen_id": {
+                   "type": "integer",
+                  "example": 23
+                },
+                "price": {
+                  "example": 200
+                },
+                "start_time":{
+                  "type": "date",
+                  "example":"10:00:00"
                 }
               }
             }
@@ -726,16 +925,17 @@
     "/api/theater/shows/delete/{MT_id}": {
       "delete": {
         "description": "",
+        "tags":["Show"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "MT_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -758,7 +958,13 @@
     "/api/screen/create/{theater_id}": {
       "post": {
         "description": "",
+         "tags":["Screen"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "theater_id",
             "in": "path",
@@ -766,9 +972,21 @@
             "type": "string"
           },
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "screen_no": {
+                  "type": "integer",
+                  "example": 5
+                },
+                "total_seats": {
+                  "type": "integer",
+                  "example": 23
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -787,7 +1005,13 @@
     "/api/screen/update/{screen_id}": {
       "put": {
         "description": "",
+        "tags":["Screen"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "screen_id",
             "in": "path",
@@ -795,9 +1019,21 @@
             "type": "string"
           },
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "screen_no": {
+                  "type": "integer",
+                  "example": 5
+                },
+                "total_seats": {
+                  "type": "integer",
+                  "example": 23
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -816,16 +1052,17 @@
     "/api/screen/delete/{screen_id}": {
       "delete": {
         "description": "",
+        "tags":["Screen"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "screen_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -851,16 +1088,17 @@
     "/api/screen/seats/create/{screen_id}": {
       "post": {
         "description": "",
+        "tags":["Seat"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "screen_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -870,19 +1108,19 @@
               "type": "object",
               "properties": {
                 "silver": {
-                  "example": "any"
+                  "example": 40
                 },
                 "gold": {
-                  "example": "any"
+                  "example": 40
                 },
                 "platinum": {
-                  "example": "any"
+                  "example": 20
                 },
                 "platinum_price": {
-                  "example": "any"
+                  "example": 40
                 },
                 "silver_price": {
-                  "example": "any"
+                  "example": 20
                 }
               }
             }
@@ -910,16 +1148,17 @@
     "/api/screen/seats/delete/{seat_id}": {
       "delete": {
         "description": "",
+        "tags":["Seat"],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "seat_id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -942,6 +1181,7 @@
     "/api/advanced/dashboard-movies": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",
@@ -962,6 +1202,7 @@
     "/api/advanced/plateform-revenue": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",
@@ -985,6 +1226,7 @@
     "/api/advanced/shows-booked": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",
@@ -1008,6 +1250,7 @@
     "/api/advanced/users-bookings": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",
@@ -1031,6 +1274,7 @@
     "/api/advancedtheater-revenue": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",
@@ -1054,6 +1298,7 @@
     "/api/advanced/most-prefered-seat": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",
@@ -1077,6 +1322,7 @@
     "/api/advanced/average-ratings": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",
@@ -1100,6 +1346,7 @@
     "/api/advanced/peak-booking-hours": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",
@@ -1123,6 +1370,7 @@
     "/api/advanced/users-cancelled-bookings": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",
@@ -1146,6 +1394,7 @@
     "/api/advanced/city-revenue": {
       "get": {
         "description": "",
+        "tags":["Advanced"],
         "parameters": [
           {
             "name": "authorization",

@@ -8,7 +8,7 @@ router.post('/sign-up',validate(userSchema),userControllers.signUp);
 
 router.post('/login',userControllers.login);
 
-router.get('/get-user',userAuth,userControllers.getUser);
+router.get('/get-user/:id',userAuth,userControllers.getUser);
 
 router.put('/update',userAuth,validate(userSchema),userControllers.userUpdate);
 
