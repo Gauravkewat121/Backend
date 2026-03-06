@@ -5,7 +5,7 @@ const feedbackRouter = require('./feedbackRouter');
 
 router.get('/get-movie/:movie_id',userAuth,movieControllers.getMovie);
 
-router.get('/get-all-movies',userAuth,movieControllers.getAllMovies);
+router.get('/get-all-movies',movieControllers.getAllMovies);
 
 router.post('/create',userAuth,movieControllers.createMovie);
 

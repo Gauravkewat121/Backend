@@ -41,3 +41,10 @@ module.exports = function(sequelize, DataTypes) {
     ]
   });
 };
+
+
+//  "security": [
+//           {
+//             "BearerAuth": []
+//           }
+//         ],

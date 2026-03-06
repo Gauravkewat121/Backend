@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
 
 exports.getUser = async (req, res) => {
     try {
-        const id = req.user.user_id;
+        const { id } = req.params;
         const cachedUser = await redisClient.get(`user-${id}`);
         if(cachedUser){
             console.log("Data from Redis");

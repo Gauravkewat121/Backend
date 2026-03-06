@@ -69,7 +69,7 @@ exports.updateMovieIntoTheater = async (req, res) => {
 exports.deleteMovieIntoTheater = async (req, res) => {
     try {
 
-        const { MT_id } = req.body;
+        const { MT_id } = req.params;
 
         const theater_movie = await MovieTheaters.findOne({ where: { isDeleted: 0, MT_id } });
         if (!theater_movie) {

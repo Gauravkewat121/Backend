@@ -1,0 +1,327 @@
+const sequelize = require('../config/db');
+const { Sequelize, QueryTypes } = require('sequelize');
+const redisClient = require('../config/redis');
+const { Users, Theaters, MovieTheaters, Movies, Cities, Bookings, Screens } = require('../models');
+const { Json } = require('sequelize/lib/utils');
+
+
+// 1. Generate a report that shows the Top 5 movies that sold the highest number of tickets.
+
+exports.dashboard_top_5_movies_ticket_based = async (req, res) => {
+
+    const cachedMovies = await redisClient.get(`dashboard_top_5_movies_ticket_based`);
+
+    if (cachedMovies) {
+        console.log('Data from Redis');
+        return res.json(JSON.parse(cachedMovies));
+    } else {
+
+        const movies = await sequelize.query(
+            `SELECT m.name,count(*) sold_tickets
+                FROM MovieTheaters mt
+                JOIN Bookings b
+                ON mt.MT_id = b.MT_id
+                JOIN Movies m
+                ON mt.movie_id = m.movie_id
+                WHERE b.status = 'booked' AND b.isDeleted =0 AND mt.isDeleted =0 AND m.isDeleted =0
+                GROUP BY m.movie_id 
+                ORDER BY sold_tickets DESC
+                LIMIT 5;`,
+            {
+                type: Sequelize.QueryTypes.SELECT
+            }
+        );
+        await redisClient.setEx(`dashboard_top_5_movies_ticket_based`, 60, JSON.stringify(movies));
+        res.status(200).send(movies);
+    }
+
+}
+
+// 2. Create a monthly revenue dashboard that shows how much money the platform earned each 
+// month from successful payments. The result should clearly display Year-Month and total revenue.
+
+
+exports.monthly_total_revenue_of_plateform = async (req, res) => {
+
+    try {
+        const revenue = await redisClient.get(`monthly_total_revenue_of_plateform`);
+
+        if (revenue) {
+            res.status(200).json(JSON.parse(revenue));
+        } else {
+
+            const revenueDetails = await sequelize.query(
+                `select date_format(booking_time,'%Y-%M') as yearMonth , count(total_amount)as totalAmount
+    from Bookings 
+    where status = 'booked' and isDeleted = 0
+    group by date_format(booking_time,'%Y-%M');`,
+                {
+                    type: Sequelize.QueryTypes.SELECT
+                }
+            );
+
+            await redisClient.setEx(`monthly_total_revenue_of_plateform`, JSON.stringify(revenueDetails));
+            res.status(200).send(revenueDetails)
+        }
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+
+}
+
+
+// 3. Identify shows that are 90% or more booked. The result should include show time, movie
+//   name, theatre name, total seats, and booked seats.
+
+exports.shows_booked_90_or_more = async (req, res) => {
+
+    try {
+        const shows = await redisClient.get(`shows_booked_90_or_more`);
+        if (shows) {
+            res.status(200).send(JSON.parse(shows));
+        } else {
+            const bookedShows = await sequelize.query(
+                `select m.name as movieName, ts.name as theater_name , mt.start_time as show_time ,total_seats,count(*) as booked ,count(booking_id)/total_seats
+        from Bookings b 
+        join MovieTheaters mt
+        on mt.MT_id = b.MT_id 
+        join Screens st
+        on  st.screen_id = mt.screen_id
+        join Theaters ts 
+        on mt.theater_id = ts.theater_id
+        join Movies m
+        on mt.movie_id = m.movie_id
+        where b.status = 'booked'
+        group by mt.MT_id,ts.theater_id,st.screen_id,movieName,theater_name ,show_time,st.total_seats
+        having count(*)/total_seats* 90 >= 90 ;`,
+                {
+                    type: Sequelize.QueryTypes.SELECT
+                }
+            );
+            await redisClient.setEx('shows_booked_90_or_more', 60, JSON.stringify(bookedShows));
+            res.status(200).send(bookedShows);
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+
+
+//  4. Find users who have booked more than 3 tickets in total across all shows. Display user
+//     details and total tickets booked.
+
+exports.users_booked_3_more_tickets = async (req, res) => {
+
+    try {
+        const users = await redisClient.get('users_booked_3_more_tickets');
+        if (users) {
+            res.status(200).send(JSON.parse(users));
+        } else {
+
+            const users = await sequelize.query(
+                `select u.user_id, u.name,u.email,u.dateOfBirth,count(b.user_id)as booked_tickets
+          from Bookings b 
+          join Users u 
+          on b.user_id = u.user_id 
+          where b.isDeleted =0 and u.isDeleted =0 and status = 'booked'
+          group by u.user_id , u.name, u.email, u.dateOfBirth 
+          having count(b.user_id) > 3 ;`,
+                {
+                    type: Sequelize.QueryTypes.SELECT
+                }
+            );
+            await redisClient.setEx('users_booked_3_more_tickets', JSON.stringify(users));
+            res.status(200).send(users);
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+// 5. Calculate total revenue generated by each theatre. Sort theatres from highest revenue to
+//    lowest.
+
+
+exports.theaters_revenue = async (req, res) => {
+    try {
+
+        const theaterRevenue = await redisClient.get('theaters_revenue');
+
+        if (theaterRevenue) {
+            res.status(200).send(JSON.parse(theaterRevenue));
+        } else {
+
+            const users = await sequelize.query(
+                `select mt.theater_id ,  sum(b.total_amount) as totalAmount 
+                from MovieTheaters mt
+                join Bookings b
+                on b.MT_id = mt.MT_id 
+                where b.status = 'booked' and mt.isDeleted = 0
+                group by mt.theater_id
+                order by totalAmount desc;`,
+                {
+                    type: Sequelize.QueryTypes.SELECT
+                }
+            );
+            await redisClient.setEx('theaters_revenue', 60, JSON.stringify(users));
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+// 6. Determine the most preferred seat type (Gold/Silver/Platinum) based on total tickets sold for
+//    each seat category.
+
+
+exports.most_prefered_seat = async (req, res) => {
+
+    try {
+        const preferred_seat = await redisClient.get('most_prefered_seat');
+        if (preferred_seat) {
+            res.status(200).send(JSON.parse(preferred_seat));
+        } else {
+            const seat = await sequelize.query(
+                `select seat_type , count(*) as tickets 
+            from Bookings b 
+            join Seats s
+            on b.seat_id = s.seat_id
+            where b.isDeleted=0 and s.isDeleted=0 and b.status = 'booked'
+            group by s.seat_type
+            order by seat_type desc
+            limit 1;`,
+                {
+                    type: Sequelize.QueryTypes.SELECT
+                }
+            );
+            await redisClient.setEx('most_prefered_seat', 60, JSON.stringify(seat));
+            res.status(200).send(seat);
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+
+// 7. Find movies that have received an average rating above 4.0 and have at least 100 reviews.
+
+
+exports.average_rating_movie_above_4_and_100_reviews = async (req, res) => {
+    try {
+        const movieRatings = await redisClient.get('average_rating_movie_above_4_and_100_reviews');
+        if (movieRatings) {
+            res.status(200).send(JSON.parse(movieRatings))
+        } else {
+
+            const users = await sequelize.query(
+                `select m.movie_id , m.name
+                from Movies m
+                join Feedbacks f
+                on m.movie_id = f.movie_id 
+                group by m.movie_id ,m.name,rating
+                having count(*) >=100 and avg(rating);`,
+                {
+                    type: Sequelize.QueryTypes.SELECT
+                }
+            );
+            await redisClient.setEx('average_rating_movie_above_4_and_100_reviews', 60, JSON.stringify(users));
+            res.status(200).send(users);
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+// 8. Identify peak booking hours of the day based on booking timestamps.
+
+
+exports.peak_booking_hours = async (req, res) => {
+    try {
+        const peakBooking = await redisClient.get('peak_booking_hours');
+
+        if (peakBooking) {
+            res.status(200).send(JSON.parse(peakBooking));
+        } else {
+
+            const users = await sequelize.query(
+                `select  date_format(booking_time,'%H') as hours ,count(date_format(booking_time,'%h')) usedHour
+                from  Bookings 
+                group by hours
+                order by usedHour desc;`,
+                {
+                    type: Sequelize.QueryTypes.SELECT
+                }
+            );
+            await redisClient.setEx('peak_booking_hours', 50, JSON.stringify(users));
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+
+//  9. Detect users who cancelled bookings more than twice.
+
+exports.users_cancelled_bookings_more_than_2 = async (req, res) => {
+    try {
+        const users = await redisClient.get('users_cancelled_bookings_more_than_2');
+        if (users) {
+            res.status(200).send(JSON.parse(users));
+        } else {
+
+            const users = await sequelize.query(
+                `select  u.user_id,u.name,u.email,status ,count(*) users 
+                from Users u
+                join Bookings b
+                on b.user_id = u.user_id
+                where b.status = 'cancelled'
+                group by u.user_id
+                having  count(u.user_id) >2;`,
+                {
+                    type: Sequelize.QueryTypes.SELECT
+                }
+            );
+            await redisClient.setEx('users_cancelled_bookings_more_than_2', 60, JSON.stringify(users));
+            res.status(200).send(users);
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+
+// 10. Create a city-wise revenue report showing which city generates the highest income
+
+
+exports.city_revenue_highest_income = async (req, res) => {
+    try {
+        const city_revenue = await redisClient.get('city_revenue_highest_income');
+
+        if (city_revenue) {
+            res.status(200).send(JSON.parse(city_revenue));
+        } else {
+
+            const users = await sequelize.query(
+                `select mt.theater_id ,c.name city , sum(b.total_amount) as totalAmount
+    from MovieTheaters mt
+    join Theaters ts
+    on mt.theater_id = ts.theater_id
+    join Cities c
+    on c.city_id = ts.city_id
+    join Bookings b 
+	on b.MT_id = mt.MT_id 
+    where b.status = 'booked' and ts.isDeleted =0
+    group by mt.theater_id,c.city_id,c.name
+    order by totalAmount desc;`,
+                {
+                    type: Sequelize.QueryTypes.SELECT
+                }
+            );
+            await redisClient.setEx('city_revenue_highest_income', 60, JSON.stringify(users));
+            res.status(200).send(users);
+        }
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
