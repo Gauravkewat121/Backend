@@ -247,7 +247,7 @@ exports.average_rating_movie_above_4_and_100_reviews = async (req, res) => {
                 join Feedbacks f
                 on m.movie_id = f.movie_id 
                 group by m.movie_id ,m.name,rating
-                having count(*) >=100 and avg(rating)
+                having count(*) >=100 and avg(rating) > 4.0
                 limit :limit offset :offset;`,
                 {
                     replacements:{offset,limit},

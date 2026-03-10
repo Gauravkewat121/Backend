@@ -30,8 +30,8 @@ exports.getAllTheaters = async (req, res) => {
 
     try {
         if(req.user.role != 'admin') return res.status(401).send('you are not permitted');
+        
         let pageno = parseInt(req.query.pageno) || 1;
-
         const limit = parseInt(req.query.limit) || 10;
 
         const offset = (pageno - 1) * limit;

@@ -138,7 +138,7 @@ group by date_format(booking_time,'%Y-%M');
 
 
 
-select m.name as movieName, ts.name as theater_name , mt.start_time as show_time ,total_seats,count(*) as booked ,count(booking_id)/total_seats
+select m.name as movieName, ts.name as theater_name , mt.start_time as show_time ,total_seats,count(*) as booked ,count(booking_id)/total_seats*100 as percentages
 from Bookings b 
 join MovieTheaters mt
 on mt.MT_id = b.MT_id 
@@ -150,7 +150,7 @@ join Movies m
 on mt.movie_id = m.movie_id
 where b.status = 'booked'
 group by mt.MT_id,ts.theater_id,st.screen_id,movieName,theater_name ,show_time,st.total_seats
-having count(*)/total_seats* 90 >= 90 ;
+having count(*)/total_seats* 100 >= 90 ;
 
 
 
@@ -254,4 +254,8 @@ having count(*)/total_seats* 90 >= 90 ;
 
 
 
-
+'Aaron Nader', '689', '42', '141'
+'Jarod Renner', '551', '40', '118'
+'Kendra Heidenreich', '422', '35', '91'
+'Kathryn Stehr', '703', '35', '102'
+'Dr. Alice Predovic', '133', '33', '99'
