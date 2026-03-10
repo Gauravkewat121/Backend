@@ -42,26 +42,28 @@ exports.dashboard_top_5_movies_ticket_based = async (req, res) => {
 exports.monthly_total_revenue_of_plateform = async (req, res) => {
 
     try {
-        const revenue = await redisClient.get(`monthly_total_revenue_of_plateform`);
-
+        let pageno = parseInt(req.query.pageno)||1;
+        let limit = parseInt(req.query.limit)||10;
+        let offset = (pageno-1)*limit;
+        const cacheKey = `monthly_total_revenue_of_plateform:${pageno}:${limit}`;
+        const revenue = await redisClient.get(cacheKey);
         if (revenue) {
             res.status(200).json(JSON.parse(revenue));
         } else {
-            console.log("****************enter*************************");
             const revenueDetails = await sequelize.query(
                 `select date_format(booking_time,'%Y-%M') as yearMonth , sum(total_amount)as totalAmount
 		         from Bookings 
 		         where status = 'booked' and isDeleted = 0
-		        group by yearMonth;`,
+		         group by yearMonth limit :limit offset :offset; `,
                 {
+                    replacements:{offset,limit},
                     type: Sequelize.QueryTypes.SELECT
                 }
             )
-            await redisClient.setEx(`monthly_total_revenue_of_plateform`,60, JSON.stringify(revenueDetails));
+            await redisClient.setEx(cacheKey,60, JSON.stringify(revenueDetails));
             res.status(200).send(revenueDetails)
         }
     } catch (err) {
-        console.log(err,"helo")
         res.status(500).send(err.message);
     }
 
@@ -74,12 +76,17 @@ exports.monthly_total_revenue_of_plateform = async (req, res) => {
 exports.shows_booked_90_or_more = async (req, res) => {
 
     try {
-        const shows = await redisClient.get(`shows_booked_90_or_more`);
+        let pageno = parseInt(req.query.pageno)||1;
+        let limit = parseInt(req.query.limit)||10;
+        let offset = (pageno-1)*limit;
+        const cacheKey = `shows_booked_90_or_more:${pageno}:${limit}`;
+        const shows = await redisClient.get(cacheKey);
         if (shows) {
             res.status(200).send(JSON.parse(shows));
         } else {
             const bookedShows = await sequelize.query(
-                `select m.name as movieName, ts.name as theater_name , mt.start_time as show_time ,total_seats,count(*) as booked ,count(booking_id)/total_seats
+        `select m.name as movieName, ts.name as theater_name, mt.start_time as show_time,
+        total_seats,count(case when b.status = 'booked' then 1 end) as booked_seats ,concat(round(count(case when b.status = 'booked' then 1 end)/total_seats*100,2),' %') as showBookedPercentage
         from Bookings b 
         join MovieTheaters mt
         on mt.MT_id = b.MT_id 
@@ -91,12 +98,14 @@ exports.shows_booked_90_or_more = async (req, res) => {
         on mt.movie_id = m.movie_id
         where b.status = 'booked'
         group by mt.MT_id,ts.theater_id,st.screen_id,movieName,theater_name ,show_time,st.total_seats
-        having count(*)/total_seats* 90 >= 90 ;`,
+        having count(*)/total_seats* 100 >= 90 
+        limit :limit offset :offset;`,
                 {
+                    replacements:{offset,limit},
                     type: Sequelize.QueryTypes.SELECT
                 }
             );
-            await redisClient.setEx('shows_booked_90_or_more', 60, JSON.stringify(bookedShows));
+            await redisClient.setEx(cacheKey, 60, JSON.stringify(bookedShows));
             res.status(200).send(bookedShows);
         }
     } catch (err) {
@@ -112,7 +121,12 @@ exports.shows_booked_90_or_more = async (req, res) => {
 exports.users_booked_3_more_tickets = async (req, res) => {
 
     try {
-        const users = await redisClient.get('users_booked_3_more_tickets');
+        
+        let pageno = parseInt(req.query.pageno)||1;
+        let limit = parseInt(req.query.limit)||10;
+        let offset = (pageno-1)*limit;
+        const cacheKey = `users_booked_3_more_tickets:${pageno}:${limit}`;
+        const users = await redisClient.get(cacheKey);
         if (users) {
             res.status(200).send(JSON.parse(users));
         } else {
@@ -124,12 +138,14 @@ exports.users_booked_3_more_tickets = async (req, res) => {
           on b.user_id = u.user_id 
           where b.isDeleted =0 and u.isDeleted =0 and status = 'booked'
           group by u.user_id , u.name, u.email, u.dateOfBirth 
-          having count(b.user_id) > 3 ;`,
+          having count(b.user_id) > 3 
+          limit :limit offset :offset;`,
                 {
+                    replacements:{offset,limit},
                     type: Sequelize.QueryTypes.SELECT
                 }
             );
-            await redisClient.setEx('users_booked_3_more_tickets',60, JSON.stringify(users));
+            await redisClient.setEx(cacheKey,60, JSON.stringify(users));
             res.status(200).send(users);
         }
     } catch (err) {
@@ -144,25 +160,33 @@ exports.users_booked_3_more_tickets = async (req, res) => {
 exports.theaters_revenue = async (req, res) => {
     try {
 
-        const theaterRevenue = await redisClient.get('theaters_revenue');
+        let pageno = parseInt(req.query.pageno)||1;
+        let limit = parseInt(req.query.limit)||10;
+        let offset = (pageno-1)*limit;
+
+        const cacheKey = `theaters_revenue:${pageno}:${limit}`;
+
+        const theaterRevenue = await redisClient.get(cacheKey);
 
         if (theaterRevenue) {
             res.status(200).send(JSON.parse(theaterRevenue));
         } else {
 
             const users = await sequelize.query(
-                `select mt.theater_id ,  sum(b.total_amount) as totalAmount 
+                `select mt.theater_id ,sum(b.total_amount) as totalAmount 
                 from MovieTheaters mt
                 join Bookings b
                 on b.MT_id = mt.MT_id 
                 where b.status = 'booked' and mt.isDeleted = 0
                 group by mt.theater_id
-                order by totalAmount desc;`,
+                order by totalAmount desc
+                limit :limit offset :offset;`,
                 {
+                    replacements:{offset,limit},
                     type: Sequelize.QueryTypes.SELECT
                 }
             );
-            await redisClient.setEx('theaters_revenue', 60, JSON.stringify(users));
+            await redisClient.setEx(cacheKey, 60, JSON.stringify(users));
         }
     } catch (err) {
         res.status(500).send(err);
@@ -207,23 +231,30 @@ exports.most_prefered_seat = async (req, res) => {
 
 exports.average_rating_movie_above_4_and_100_reviews = async (req, res) => {
     try {
-        const movieRatings = await redisClient.get('average_rating_movie_above_4_and_100_reviews');
+
+          let pageno = parseInt(req.query.pageno)||1;
+        let limit = parseInt(req.query.limit)||10;
+        let offset = (pageno-1)*limit;
+        const cacheKey = `average_rating_movie_above_4_and_100_reviews:${pageno}:${limit}`;
+        const movieRatings = await redisClient.get(cacheKey);
         if (movieRatings) {
             res.status(200).send(JSON.parse(movieRatings))
         } else {
 
             const users = await sequelize.query(
-                `select m.movie_id , m.name
+                `select m.movie_id , m.name , count(*) totalRating
                 from Movies m
                 join Feedbacks f
                 on m.movie_id = f.movie_id 
                 group by m.movie_id ,m.name,rating
-                having count(*) >=100 and avg(rating);`,
+                having count(*) >=100 and avg(rating)
+                limit :limit offset :offset;`,
                 {
+                    replacements:{offset,limit},
                     type: Sequelize.QueryTypes.SELECT
                 }
             );
-            await redisClient.setEx('average_rating_movie_above_4_and_100_reviews', 60, JSON.stringify(users));
+            await redisClient.setEx(cacheKey, 60, JSON.stringify(users));
             res.status(200).send(users);
         }
     } catch (err) {
@@ -246,7 +277,8 @@ exports.peak_booking_hours = async (req, res) => {
                 `select  date_format(booking_time,'%H') as hours ,count(date_format(booking_time,'%H')) usedHour
                 from  Bookings 
                 group by hours
-                order by usedHour desc;`,
+                order by usedHour desc
+                limit 1;`,
                 {
                     type: Sequelize.QueryTypes.SELECT
                 }
@@ -263,24 +295,30 @@ exports.peak_booking_hours = async (req, res) => {
 
 exports.users_cancelled_bookings_more_than_2 = async (req, res) => {
     try {
-        const users = await redisClient.get('users_cancelled_bookings_more_than_2');
+         let pageno = parseInt(req.query.pageno)||1;
+        let limit = parseInt(req.query.limit)||10;
+        let offset = (pageno-1)*limit;
+        const cacheKey = `users_cancelled_bookings_more_than_2:${pageno}:${limit}`;
+        const users = await redisClient.get(cacheKey);
         if (users) {
             res.status(200).send(JSON.parse(users));
         } else {
 
             const users = await sequelize.query(
-                `select  u.user_id,u.name,u.email,status ,count(*) users 
+                `select  u.user_id,u.name,u.email,status ,count(*) cancelledBookedSeatCount 
                 from Users u
                 join Bookings b
                 on b.user_id = u.user_id
                 where b.status = 'cancelled'
                 group by u.user_id
-                having  count(u.user_id) >2;`,
+                having  count(u.user_id) >2
+                limit :limit offset :offset;`,
                 {
+                    replacements : {offset,limit},
                     type: Sequelize.QueryTypes.SELECT
                 }
             );
-            await redisClient.setEx('users_cancelled_bookings_more_than_2', 60, JSON.stringify(users));
+            await redisClient.setEx(cacheKey, 60, JSON.stringify(users));
             res.status(200).send(users);
         }
     } catch (err) {
@@ -294,7 +332,12 @@ exports.users_cancelled_bookings_more_than_2 = async (req, res) => {
 
 exports.city_revenue_highest_income = async (req, res) => {
     try {
-        const city_revenue = await redisClient.get('city_revenue_highest_income');
+
+        let pageno = parseInt(req.query.pageno)||1;
+        let limit = parseInt(req.query.limit)||10;
+        let offset = (pageno-1)*limit;
+        const cacheKey = `city_revenue_highest_income:${pageno}:${limit}`;
+        const city_revenue = await redisClient.get(cacheKey);
 
         if (city_revenue) {
             res.status(200).send(JSON.parse(city_revenue));
@@ -311,12 +354,14 @@ exports.city_revenue_highest_income = async (req, res) => {
 	on b.MT_id = mt.MT_id 
     where b.status = 'booked' and ts.isDeleted =0
     group by mt.theater_id,c.city_id,c.name
-    order by totalAmount desc;`,
+    order by totalAmount desc
+    limit :limit offset :offset`,
                 {
+                    replacements: {offset,limit},
                     type: Sequelize.QueryTypes.SELECT
                 }
             );
-            await redisClient.setEx('city_revenue_highest_income', 60, JSON.stringify(users));
+            await redisClient.setEx(cacheKey, 60, JSON.stringify(users));
             res.status(200).send(users);
         }
     } catch (err) {

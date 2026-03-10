@@ -4,12 +4,12 @@ const userAuth = require('../middlewares/userAuth');
 const validate = require('../utils/joi');
 const {userSchema,userUpdate} = require('../validation/userValidation');
 
-router.post('/sign-up',validate(userSchema),userControllers.signUp);
+router.post('/sign-up',validate(userSchema,'body'),userControllers.signUp);
 
 router.post('/login',userControllers.login);
 
 router.get('/get-user/:id',userAuth,userControllers.getUser);
 
-router.put('/update',userAuth,validate(userUpdate),userControllers.userUpdate);
+router.put('/update',userAuth,validate(userUpdate,'body'),userControllers.userUpdate);
 
 module.exports = router;

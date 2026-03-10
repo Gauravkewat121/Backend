@@ -2,11 +2,13 @@ const Joi = require('joi');
 
 const seatSchema = Joi.object({
 
- silver: Joi.number(),
- gold: Joi.number(),
-  platinum:Joi.number(),
-  platinum_price:Joi.number(),
-  silver_price:Joi.number(),
+  silver: Joi.number().integer().positive(),
+  gold: Joi.number().integer().positive(),
+  platinum:Joi.number().integer().positive(),
+
+  platinum_price:Joi.number().positive(),
+  gold_price:Joi.number().positive(),
+  silver_price:Joi.number().positive(),
 
   screen_id: Joi.number()
     .integer(),

@@ -1,14 +1,10 @@
 const { Bookings, Payments } = require('../models');
 const sequelize = require("../config/db");
 
-
-
 async function is_seat_available(MT_id, seat_id) {
-    const Booking = await Bookings.findOne({ where: { MT_id, seat_id, status: "cancelled", isDeleted: false } })
+    const Booking = await Bookings.findOne({ where: { MT_id, seat_id, status: "booked", isDeleted: false } });
     return Booking;
 }
-
-
 
 async function processPayment(paymentDetails) {
     const delay = Math.random() * 2000 + 1000;
@@ -32,11 +28,8 @@ async function createBookingAndProcessPayment(userId, MT_id, seat_id,total_amoun
     try {
         const is_Seat = await is_seat_available(MT_id, seat_id);
         if (is_Seat) {
-            throw new Error('seat already Booked !!!!!');
+            throw new Error('Seat already Booked !!!!!');
         }
-
-
-        
 
         const Booking = await Bookings.create({
             user_id: userId,
@@ -86,6 +79,7 @@ exports.bookingAndPayment = async (req, res) => {
 
     try {
         const result = await createBookingAndProcessPayment(req.user.user_id, MT_id, seat_id,total_amount, paymentDetails);
+        console.log(result);
         res.status(200).json({
             bookingId: result.bookingId,
             paymentStatus: result.paymentStatus,
@@ -103,12 +97,17 @@ exports.bookingAndPayment = async (req, res) => {
 exports.cancelBooking = async (req, res) => {
     try {
         const { booking_id } = req.params;
-        const Booking = await Bookings.findOne({ where: { booking_id, user_id: req.user.user_id, isDeleted: false } })
+
+        const Booking = await Bookings.findOne({ where: { booking_id, user_id: req.user.user_id, isDeleted: false } });
+
         console.log(booking_id,Booking);
-        if (!Booking) return res.status(404).json({ msg: "booking not found !!!" })
-        await Booking.update({ status: 'cancelled' })
-        res.status(200).json({ msg: "booking cancelled !!" })
+        if (!Booking){
+            res.status(404).json({ msg: "booking not found !!!" })
+        }else{
+            await Booking.update({ status: 'cancelled' })
+            res.status(200).json({ msg: "booking cancelled !!" })
+        }
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        res.status(400).json({ error: error.message });
     }
 }

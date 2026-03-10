@@ -1,17 +1,15 @@
+const { shared } = require("../validation/paymentValidation");
 
-function validate(schema) {
+function validate(schema,type) {
 
   return (req, res, next) => {
-
-    const { error,value } = schema.validate(req.body);
-
+    const { error,value } = schema.validate(req[type]);
+    console.log(error,value)
     if (error) {
-      console.log("**********ERROR")
       return res.status(400).json({
         message: error.details[0].message
       });
     }
-    console.log(value);
     req.body = value;
     next();
   };

@@ -1,8 +1,6 @@
 
 const { Movies, Theaters, MovieTheaters } = require('../models');
 const redisClient = require('../config/redis');
-const { Json } = require('sequelize/lib/utils');
-const { es } = require('faker/lib/locales');
 
 exports.addMovieIntoTheater = async (req, res) => {
 
