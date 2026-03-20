@@ -24,7 +24,6 @@ exports.updateScreens = async (req, res) => {
     
     try {
         const { screen_id } = req.params;
-        console.log(screen_id,req.user.user_id)
         let screen = await Screens.findOne({ where: { screen_id, isDeleted: 0 },
             include : [
                 {

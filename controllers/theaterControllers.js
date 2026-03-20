@@ -47,7 +47,7 @@ exports.getAllTheaters = async (req, res) => {
         const count = await Theaters.count({ where: { isDeleted: false } });
         const totalPages = Math.ceil(count / limit);
         await redisClient.setEx(`get-all-theaters-${pageno}-${limit}`,60*2,JSON.stringify({theaters, currentPage: pageno, totalPages}));
-        res.status(200).json({ theaters, currentPage: pageno, totalPages });
+        res.status(200).json({ theaters, currentPage: pageno, limit, totalPages });
 
     } catch (err) {
         res.status(500).send(err.message);

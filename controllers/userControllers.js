@@ -1,28 +1,30 @@
 const { Users } = require("../models");
-const bcrypt = require("bcrypt");
 const redisClient = require('../config/redis');
 const { generateToken } = require("../utils/jwt");
+const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
 
 exports.signUp = async (req, res) => {
     try {
         const { name, email, phone, role,password, dateOfBirth } = req.body;
-        let user = await Users.findOne({ where: { email, isDeleted: false } });
-        if (user) {
-            return res.status(409).json({ message: "Email already Exists" });
-        }
-        const haspass = await bcrypt.hash(password, 10);
 
-        user = await Users.create({
-            name,
-            email,
-            phone,
-            role,
-            password: haspass,
-            dateOfBirth,
-        });
-        return res.status(400).json({ message: `${user.role} registered successfully` });
+        let user = await Users.findOne({ 
+            where: { 
+                [Op.or]: [
+                    {email, isDeleted: false},
+                    {phone, isDeleted: false} 
+                ]
+            } 
+            },{raw:true});
+        if (user) {
+             let valid = (user.email == email && `email`) || (user.phone == phone && `phone`);
+            return res.status(409).json({ message: `${valid} already Exists` });
+        }
+
+        user = await Users.create(req.body);
+        return res.status(200).json({ message: `${user.role} registered successfully` });
     } catch (error) {
-        return res.status(500).json(error.message);
+        return res.status(500).json({ message:error.message });
     }
 };
 

@@ -106,7 +106,7 @@ exports.getAllMovies = async (req, res) => {
 
         const totalPages = Math.ceil(count / limit);
 
-        await redisClient.setEx(`movies-${pageno}-${limit}`, 60 * 3, JSON.stringify({ currentPage: pageno, totalPages, movies }));
+        await redisClient.setEx(`movies-${pageno}-${limit}`, 60 * 3, JSON.stringify({ currentPage: pageno, limit ,totalPages, movies }));
 
         res.status(200).json({ currentPage: pageno, totalPages, movies });
 

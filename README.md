@@ -1,25 +1,106 @@
 
-# User-Routes
+# City - Routes
+
+/api/city
+
+            router.post('/add',userAuth,validate(citySchema,'body'),cityControllers.add_City);
+
+            router.get('/get-all-cities',cityControllers.getAll_City);
+
+# User - Vendor - Routes
 
 /api/user
-      /login
-      /sign-up
-      /get-user
+            /login
+            /sign-up
+            /get-user
 
-# Theater-Routes
+# Theater - Routes
 
 /api/theater
-         /create
-         /update
-         /get-theater/:theater_id
-         /get-all-theaters
-         /delete
+            /create
+            /update
+            /get-theater/:theater_id
+            /get-all-theaters
+            /delete
 
-# Movie-Routes
+# Screen - Routes
+
+/api/screen 
+
+            router.post('/create/:theater_id',userAuth,validate(screenSchema,'body'),screenControllers.addScreens);
+
+            router.put('/update/:screen_id',userAuth,validate(screenUpdate,'body'),screenControllers.updateScreens);
+
+            router.delete('/delete/:screen_id',userAuth,screenControllers.deleteScreen);
+
+
+# Seats - Routes
+
+/api/screen/seats
+
+                router.post('/create/:screen_id',userAuth,validate(seatSchema,'body'),seatControllers.createSeat);
+
+                router.delete('/delete/:seat_id',userAuth,seatControllers.deleteSeat);
+
+# Movie - Routes
 
 /api/movie
+            router.post('/create',userAuth,validate(movieSchema,'body'),movieControllers.createMovie);
 
+            router.put('/update/:movie_id',userAuth,validate(movieSchema,'body'),movieControllers.updateMovie);
 
+            router.get('/get-movie/:movie_id',userAuth,movieControllers.getMovie);
+
+            router.get('/get-all-movies',validate(pageSchema,'query'),movieControllers.getAllMovies);
+
+            router.delete('/delete/:movie_id',userAuth,movieControllers.deleteMovie);
+
+# Feedback - Routes
+
+api/movie/feedbacks
+
+                    router.post('/create/:movie_id',userAuth,validate(feedbackSchema,'body'),feedbackControllers.createFeedback);
+
+                    router.delete('/delete/:feedback_id/',userAuth,feedbackControllers.deleteFeedback);
+
+# MovieTheater - Routes
+
+api/theater/shows
+
+                    router.post('/create',userAuth,validate(showSchema,'body'),movieTheaterControllers.addMovieIntoTheater);
+
+                    router.get('/get-movies/:theater_id',userAuth,movieTheaterControllers.getMoviesOfTheater)
+
+                    router.get('/get-movie/:movie_id/:theater_id',userAuth,movieTheaterControllers.getMovieOfTheater);
+
+                    router.put('/update/:MT_id',userAuth,validate(showUpdate,'body'),movieTheaterControllers.updateMovieIntoTheater);
+
+                    router.delete('/delete/:MT_id',userAuth,movieTheaterControllers.deleteMovieIntoTheater);
+
+# Advance - Query Routes
+
+/api/advanced
+                router.get('/dashboard-movies',userAuth,advancedControllers.dashboard_top_5_movies_ticket_based);
+
+                router.get('/plateform-revenue',userAuth,validate(pageSchema,'query'),advancedControllers.monthly_total_revenue_of_plateform);
+
+                router.get('/shows-booked',userAuth,validate(pageSchema,'query'),advancedControllers.shows_booked_90_or_more);
+
+                router.get('/users-bookings',userAuth,validate(pageSchema,'query'),advancedControllers.users_booked_3_more_tickets);
+
+                router.get('/theater-revenue',userAuth,validate(pageSchema,'query'),advancedControllers.theaters_revenue);
+
+                router.get('/most-prefered-seat',userAuth,advancedControllers.most_prefered_seat);
+
+                router.get('/average-ratings',userAuth,validate(pageSchema,'query'),advancedControllers.average_rating_movie_above_4_and_100_reviews);
+
+                router.get('/peak-booking-hours',userAuth,advancedControllers.peak_booking_hours);
+
+                router.get('/users-cancelled-bookings',userAuth,validate(pageSchema,'query'),advancedControllers.users_cancelled_bookings_more_than_2);
+
+                router.get('/city-revenue',userAuth,validate(pageSchema,'query'),advancedControllers.city_revenue_highest_income);
+
+# Some user and vnedor
 
 {
     "name": "Aashish Chanchalani",

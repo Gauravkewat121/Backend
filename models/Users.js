@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+const bcrypt = require('bcrypt');
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('Users', {
     user_id: {
       autoIncrement: true,
@@ -26,7 +27,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     role: {
-      type: DataTypes.ENUM('user','admin','vendor'),
+      type: DataTypes.ENUM('user', 'admin', 'vendor'),
       allowNull: false,
       defaultValue: "user"
     },
@@ -44,6 +45,13 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'Users',
     timestamps: true,
     paranoid: true,
+    hooks: {
+      beforeCreate: async (user) => {
+        console.log("enter inside hook" + user.password);
+        user.password = await bcrypt.hash(user.password, 12);
+        console.log(user.password);
+      }
+    },
     indexes: [
       {
         name: "PRIMARY",

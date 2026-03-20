@@ -11,7 +11,7 @@ exports.add_City = async (req, res) => {
       res.status(200).json({city, message: "added successfully" });
     }
   } catch (error) {
-    res.status(500).json(error.message);
+      res.status(500).json({message: error.message});
   }
 };
 
@@ -22,8 +22,8 @@ exports.getAll_City = async (req, res) => {
       raw: true,
       attributes: { exclude: ["isDeleted", "deletedAt",] },
     });
-    res.status(200).json(city);
+    res.status(200).json({Response:city});
   } catch (error) {
-    res.status(500).json(error.message);
+    res.status(500).json({message: error.message});
   }
 };

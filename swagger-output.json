@@ -5,13 +5,13 @@
     "description": "API documentation",
     "version": "1.0.0"
   },
-  "host": "localhost:5000",
+  "host": "localhost:4000",
   "basePath": "/",
   "schemes": [
     "http"
   ],
   "securityDefinitions": {
-    "BearerAuth": {
+    "bearerAuth": {
       "type": "apiKey",
       "in": "header",
       "name": "Authorization",
@@ -19,16 +19,18 @@
     }
   },
   "paths": {
-     "/api/city/add": {
+    "/api/city/add": {
       "post": {
         "description": "",
-        "tags": ["City"],
-        "parameters": [
+        "tags": [
+          "City"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "body",
             "in": "body",
@@ -44,9 +46,9 @@
                 "country": {
                   "example": "India"
                 }
+              }
             }
-        }
-    }
+          }
         ],
         "responses": {
           "200": {
@@ -64,7 +66,9 @@
     "/api/city/get-all-cities": {
       "get": {
         "description": "",
-        "tags": ["City"],
+        "tags": [
+          "City"
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -78,7 +82,10 @@
     "/api/user/sign-up": {
       "post": {
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
+        
         "parameters": [
           {
             "name": "body",
@@ -125,7 +132,10 @@
     "/api/user/login": {
       "post": {
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
+      
         "parameters": [
           {
             "name": "body",
@@ -159,13 +169,15 @@
     "/api/user/get-user/{id}": {
       "get": {
         "description": "",
-        "tags": ["User"],
-        "parameters": [
+        "tags": [
+          "User"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "id",
             "in": "path",
@@ -189,13 +201,15 @@
     "/api/user/update": {
       "put": {
         "description": "",
-        "tags": ["User"],
-        "parameters": [
+        "tags": [
+          "User"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "body",
             "in": "body",
@@ -240,13 +254,15 @@
     "/api/movie/get-movie/{movie_id}": {
       "get": {
         "description": "",
-        "tags":["Movie"],
-        "parameters": [
+        "tags": [
+          "Movie"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "movie_id",
             "in": "path",
@@ -270,7 +286,14 @@
     "/api/movie/get-all-movies": {
       "get": {
         "description": "",
-        "tags":["Movie"],
+        "tags": [
+          "Movie"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "pageno",
@@ -296,13 +319,15 @@
     "/api/movie/create": {
       "post": {
         "description": "",
-        "tags":["Movie"],
-        "parameters": [
+        "tags": [
+          "Movie"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "body",
             "in": "body",
@@ -355,13 +380,15 @@
     "/api/movie/delete/{movie_id}": {
       "delete": {
         "description": "",
-        "tags":["Movie"],
-        "parameters": [
+        "tags": [
+          "Movie"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "movie_id",
             "in": "path",
@@ -391,13 +418,15 @@
     "/api/movie/update/{movie_id}": {
       "put": {
         "description": "",
-        "tags":["Movie"],
-        "parameters": [
+        "tags": [
+          "Movie"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "movie_id",
             "in": "path",
@@ -459,13 +488,15 @@
     "/api/movie/feedbacks/create/{movie_id}": {
       "post": {
         "description": "",
-        "tags":["Feedback"],
-        "parameters": [
+        "tags": [
+          "Feedback"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "movie_id",
             "in": "path",
@@ -483,7 +514,7 @@
                 },
                 "comment": {
                   "example": "it is nice movie"
-                }  
+                }
               }
             }
           }
@@ -504,13 +535,15 @@
     "/api/movie/feedbacks/delete/{feedback_id}/": {
       "delete": {
         "description": "",
-        "tags":["Feedback"],
-        "parameters": [
+        "tags": [
+          "Feedback"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "feedback_id",
             "in": "path",
@@ -537,13 +570,15 @@
     "/api/theater/create": {
       "post": {
         "description": "",
-        "tags":["Theater"],
-        "parameters": [
+        "tags": [
+          "Theater"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "city_id",
             "in": "query",
@@ -593,20 +628,22 @@
     "/api/theater/update/{theater_id}": {
       "put": {
         "description": "",
-         "tags":["Theater"],
-        "parameters": [
+        "tags": [
+          "Theater"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "theater_id",
             "in": "path",
             "required": true,
             "type": "string"
           },
-           {
+          {
             "name": "body",
             "in": "body",
             "schema": {
@@ -647,13 +684,15 @@
     "/api/theater/delete/{theater_id}": {
       "delete": {
         "description": "",
-        "tags":["Theater"],
-        "parameters": [
+        "tags": [
+          "Theater"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "theater_id",
             "in": "path",
@@ -677,13 +716,15 @@
     "/api/theater/get-theater/{theater_id}": {
       "get": {
         "description": "",
-         "tags":["Theater"],
-        "parameters": [
+        "tags": [
+          "Theater"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "theater_id",
             "in": "path",
@@ -707,13 +748,15 @@
     "/api/theater/get-all-theaters": {
       "get": {
         "description": "",
-         "tags":["Theater"],
-        "parameters": [
+        "tags": [
+          "Theater"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "pageno",
             "in": "query",
@@ -744,13 +787,15 @@
     "/api/theater/shows/create": {
       "post": {
         "description": "",
-        "tags":["Show"],
-        "parameters": [
+        "tags": [
+          "Show"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "body",
             "in": "body",
@@ -762,19 +807,19 @@
                   "example": 23
                 },
                 "theater_id": {
-                   "type": "integer",
+                  "type": "integer",
                   "example": 23
                 },
                 "screen_id": {
-                   "type": "integer",
+                  "type": "integer",
                   "example": 23
                 },
                 "price": {
                   "example": 200
                 },
-                "start_time":{
+                "start_time": {
                   "type": "date",
-                  "example":"2026-04-01 18:00"
+                  "example": "2026-04-01 18:00"
                 }
               }
             }
@@ -799,13 +844,15 @@
     "/api/theater/shows/get-movies/{theater_id}": {
       "get": {
         "description": "",
-        "tags":["Show"],
-        "parameters": [
+        "tags": [
+          "Show"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "theater_id",
             "in": "path",
@@ -829,13 +876,15 @@
     "/api/theater/shows/get-movie/{movie_id}/{theater_id}": {
       "get": {
         "description": "",
-        "tags":["Show"],
-        "parameters": [
+        "tags": [
+          "Show"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "movie_id",
             "in": "path",
@@ -865,13 +914,15 @@
     "/api/theater/shows/update/{MT_id}": {
       "put": {
         "description": "",
-        "tags":["Show"],
-        "parameters": [
+        "tags": [
+          "Show"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "MT_id",
             "in": "path",
@@ -889,19 +940,19 @@
                   "example": 23
                 },
                 "theater_id": {
-                   "type": "integer",
+                  "type": "integer",
                   "example": 23
                 },
                 "screen_id": {
-                   "type": "integer",
+                  "type": "integer",
                   "example": 23
                 },
                 "price": {
                   "example": 200
                 },
-                "start_time":{
+                "start_time": {
                   "type": "date",
-                  "example":"2002-02-10 21:00:00"
+                  "example": "2002-02-10 21:00:00"
                 }
               }
             }
@@ -926,13 +977,15 @@
     "/api/theater/shows/delete/{MT_id}": {
       "delete": {
         "description": "",
-        "tags":["Show"],
-        "parameters": [
+        "tags": [
+          "Show"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "MT_id",
             "in": "path",
@@ -959,13 +1012,15 @@
     "/api/screen/create/{theater_id}": {
       "post": {
         "description": "",
-         "tags":["Screen"],
-        "parameters": [
+        "tags": [
+          "Screen"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "theater_id",
             "in": "path",
@@ -986,7 +1041,7 @@
                   "type": "integer",
                   "example": 23
                 },
-                "screen_type":{
+                "screen_type": {
                   "example": "IMax"
                 }
               }
@@ -1009,13 +1064,15 @@
     "/api/screen/update/{screen_id}": {
       "put": {
         "description": "",
-        "tags":["Screen"],
-        "parameters": [
+        "tags": [
+          "Screen"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "screen_id",
             "in": "path",
@@ -1036,7 +1093,7 @@
                   "type": "integer",
                   "example": 23
                 },
-                "screen_type":{
+                "screen_type": {
                   "example": "IMax"
                 }
               }
@@ -1059,13 +1116,15 @@
     "/api/screen/delete/{screen_id}": {
       "delete": {
         "description": "",
-        "tags":["Screen"],
-        "parameters": [
+        "tags": [
+          "Screen"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "screen_id",
             "in": "path",
@@ -1095,13 +1154,15 @@
     "/api/screen/seats/create/{screen_id}": {
       "post": {
         "description": "",
-        "tags":["Seat"],
-        "parameters": [
+        "tags": [
+          "Seat"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "screen_id",
             "in": "path",
@@ -1126,7 +1187,7 @@
                 "platinum_price": {
                   "example": 350
                 },
-                "gold_price":{
+                "gold_price": {
                   "example": 300
                 },
                 "silver_price": {
@@ -1158,13 +1219,15 @@
     "/api/screen/seats/delete/{seat_id}": {
       "delete": {
         "description": "",
-        "tags":["Seat"],
-        "parameters": [
+        "tags": [
+          "Seat"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "seat_id",
             "in": "path",
@@ -1191,7 +1254,14 @@
     "/api/advanced/dashboard-movies": {
       "get": {
         "description": "Generate a report that shows the Top 5 movies that sold the highest number of tickets.Include movie name and total tickets sold.",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "authorization",
@@ -1212,14 +1282,16 @@
     "/api/advanced/plateform-revenue": {
       "get": {
         "description": "Create a monthly revenue dashboard that shows how much money the platform earned each month from successful payments. The result should clearly display Year-Month and total revenue.",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-           {
             "name": "pageno",
             "in": "query",
             "type": "string"
@@ -1246,14 +1318,16 @@
     "/api/advanced/shows-booked": {
       "get": {
         "description": "Identify shows that are 90% or more booked. The result should include show time, movie name, theatre name, total seats, and booked seats.",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-           {
             "name": "pageno",
             "in": "query",
             "type": "string"
@@ -1280,14 +1354,16 @@
     "/api/advanced/users-bookings": {
       "get": {
         "description": "Find users who have booked more than 3 tickets in total across all shows. Display user details and total tickets booked.",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-           {
             "name": "pageno",
             "in": "query",
             "type": "string"
@@ -1314,14 +1390,16 @@
     "/api/advanced/theater-revenue": {
       "get": {
         "description": "Calculate total revenue generated by each theatre. Sort theatres from highest revenue to lowest.",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-           {
             "name": "pageno",
             "in": "query",
             "type": "string"
@@ -1348,7 +1426,14 @@
     "/api/advanced/most-prefered-seat": {
       "get": {
         "description": "Determine the most preferred seat type (Gold/Silver/Platinum) based on total tickets sold for each seat category.",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "authorization",
@@ -1372,14 +1457,16 @@
     "/api/advanced/average-ratings": {
       "get": {
         "description": "Find movies that have received an average rating above 4.0 and have at least 100 reviews.",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-           {
             "name": "pageno",
             "in": "query",
             "type": "string"
@@ -1406,7 +1493,14 @@
     "/api/advanced/peak-booking-hours": {
       "get": {
         "description": "Identify peak booking hours of the day based on booking timestamps.",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "authorization",
@@ -1430,14 +1524,16 @@
     "/api/advanced/users-cancelled-bookings": {
       "get": {
         "description": "Detect users who cancelled bookings more than twice.",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-           {
             "name": "pageno",
             "in": "query",
             "type": "string"
@@ -1464,14 +1560,16 @@
     "/api/advanced/city-revenue": {
       "get": {
         "description": " Create a city-wise revenue report showing which city generates the highest income",
-        "tags":["Advanced"],
+        "tags": [
+          "Advanced"
+        ],
+        "security": [
+          {
+            " bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-           {
             "name": "pageno",
             "in": "query",
             "type": "string"
@@ -1498,13 +1596,15 @@
     "/booking/create": {
       "post": {
         "description": "",
-        "tags":["Booking"],
-        "parameters": [
+        "tags": [
+          "Booking"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "body",
             "in": "body",
@@ -1517,10 +1617,10 @@
                 "seat_id": {
                   "example": 87
                 },
-                "total_amount":{
-                   "example": 300
+                "total_amount": {
+                  "example": 300
                 },
-               "paymentDetails": {
+                "paymentDetails": {
                   "type": "object",
                   "properties": {
                     "payment_method": {
@@ -1553,13 +1653,15 @@
     "/booking/cancel/{booking_id}": {
       "post": {
         "description": "",
-        "tags":["Booking"],
-        "parameters": [
+        "tags": [
+          "Booking"
+        ],
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
+            " bearerAuth": []
+          }
+        ],
+        "parameters": [
           {
             "name": "booking_id",
             "in": "path",

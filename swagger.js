@@ -1,18 +1,21 @@
 const swaggerAutogen = require('swagger-autogen')();
+require('dotenv').config();
 
+console.log(process.env.PORT);
 const doc = {
   info: {
     title: "Movie Booking API",
     description: "API documentation"
   },
-  host: "localhost:5000",
+  host: `localhost:${process.env.PORT}`,
   schemes: ["http"],
-  securityDefinitions: {
-    BearerAuth: {
-      type: "apiKey",
-      in: "header",
-      name: "Authorization",
-      description: "Enter JWT token: Bearer <token>"
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: "JWT"
+      }
     }
   }
 };
