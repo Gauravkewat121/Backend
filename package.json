@@ -16,7 +16,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "swagger": "node swagger.js"
   },
   "dependencies": {
     "@faker-js/faker": "^10.3.0",

@@ -330,12 +330,14 @@ exports.average_rating_movie_above_4_and_100_reviews = async (req, res) => {
             );
             const total_pages = await sequelize.query(
                 `select count(*) pages
-                from(select  m.movie_id
-                from Movies m
-                join Feedbacks f
-                on m.movie_id = f.movie_id 
-                group by m.movie_id ,m.name,rating
-                having count(*) >=100 and avg(rating) > 4.0)temp;`,
+                from (
+                    select  m.movie_id
+                    from Movies m
+                    join Feedbacks f
+                    on m.movie_id = f.movie_id 
+                    group by m.movie_id ,m.name,rating
+                    having count(*) >=100 and avg(rating) > 4.0
+                ) as temp;`,
                 {
                     type: Sequelize.QueryTypes.SELECT
                 }

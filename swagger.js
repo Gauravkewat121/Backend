@@ -8,16 +8,20 @@ const doc = {
     description: "API documentation"
   },
   host: `localhost:${process.env.PORT}`,
-  schemes: ["http"],
-  components: {
-    securitySchemes: {
-      bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: "JWT"
-      }
-    }
-  }
+  schemes: ["http"],  securityDefinitions: {
+    BearerAuth: {
+      type: "apiKey",
+      name: "Authorization",
+      in: "header",
+      description: "Enter: Bearer <token>",
+    },
+  },
+ 
+  security: [
+    {
+      BearerAuth: [],
+    },
+  ],
 };
 
 const outputFile = "./swagger-output.json";

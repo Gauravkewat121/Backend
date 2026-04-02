@@ -83,7 +83,7 @@ exports.updateTheater = async (req, res) => {
 
         let theater = await Theaters.findOne({ where: { theater_id, isDeleted: 0 } });
         if (!theater) {
-            res.status(404).send('Resource not found');
+            res.status(404).send({message:'Resource not found'});
         }
         else if (theater.owner_id == req.user.user_id || req.user.role == 'admin') {
 
@@ -91,11 +91,11 @@ exports.updateTheater = async (req, res) => {
             res.status(200).send({ theater, message: 'successfully updated!' });
         }
         else {
-            res.status(201).send('you are not permited');
+            res.status(201).send({message:'you are not permited'});
         }
 
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send({message: err.message});
     }
 
 }
@@ -107,17 +107,17 @@ exports.deleteTheater = async (req, res) => {
 
         const theater = await Theaters.findOne({ where: { theater_id, isDeleted: 0 } });
         if (!theater) {
-            res.status(404).send('Resource not found');
+            res.status(404).send({message:'Resource not found'});
         }
         else if (req.user.role == 'admin' || theater.owner_id == req.user.user_id) {
             await theater.update({ isDeleted: 1 ,status:'inactive'});
-            res.status(200).send('theater deleted successfully!');
+            res.status(200).send({message:'theater deleted successfully!'});
         } else {
-            res.status(200).send('You are not Permitted!');
+            res.status(200).send({message:'You are not Permitted!'});
         }
 
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send({message: err.message});
     }
 
 }

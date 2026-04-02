@@ -11,19 +11,19 @@ exports.addMovieIntoTheater = async (req, res) => {
         const movie = await Movies.findOne({ where: { isDeleted: 0, movie_id } });
 
         if (!movie) {
-            res.status(404).send('Movie is not found');
+            res.status(404).send({message: 'Movie is not found'});
         } else {
             let theater = await Theaters.findOne({ where: { isDeleted: 0, theater_id } });
 
             if (!theater) {
-                res.status(404).send('Theater is not found');
+                res.status(404).send({message:'Theater is not found'});
             } else {
 
                 if (req.user.role == 'admin' || req.user.user_id == theater.owner_id) {
                     let theater_movie = await MovieTheaters.create(req.body);
                     res.status(200).send({ message: 'movie successfully added into the theater ', theater_movie });
                 } else {
-                    res.status(403).send('you are not permitted');
+                    res.status(403).send({message:'you are not permitted'});
                 }
             }
         }

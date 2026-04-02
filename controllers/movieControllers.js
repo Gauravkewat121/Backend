@@ -1,20 +1,27 @@
 const { Movies } = require("../models");
 
 const redisClient = require('../config/redis');
+const { message } = require("../validation/paymentValidation");
+
 
 exports.createMovie = async (req, res) => {
     try {
         if (req.user.role == "admin") {
 
-            const movie = await Movies.create(req.body);
-            res.status(200).json({ msg: "movie create succesfully !!", movie });
+            const exists_movie = await Movies.findOne({where: {name: req.body.name, isDeleted: false}});
+            if(exists_movie) {
+                res.status(201).send({message: "movie already exists"});
+            }else{
+                const movie = await Movies.create(req.body);
+                res.status(200).json({ msg: "movie create succesfully !!", movie });
+            }
         }
         else {
-            res.status(403).json({ msg: "NOT authorized !!" });
+            res.status(403).json({ msg: "NOT Permitted!" });
         }
 
     } catch (error) {
-        return res.status(500).send(error);
+         res.status(500).send({message: error.message});
     }
 };
 
@@ -22,22 +29,21 @@ exports.createMovie = async (req, res) => {
 exports.deleteMovie = async (req, res) => {
     try {
         const { movie_id } = req.params;
-        if (req.user.role != "admin") {
-
-            res.status(403).json({ msg: "NOT authorized !!" });
-        }
-        else {
+        if (req.user.role == "admin") {
 
             const movie = await Movies.findOne({ where: { movie_id, isDeleted: false } })
-
+    
             if (!movie) return res.status(401).json({ msg: "movie not found !!" })
-
+    
             await movie.update({ isDeleted: true, deletedAt: Date.now() });
-
+    
             res.status(200).json({ msg: "movie create succesfully !!" });
         }
+        else {
+            res.status(403).json({ msg: "NOT authorized !!" });
+        }
     } catch (error) {
-        return res.status(500).send(error);
+        res.status(500).send({message: error.message})
     }
 };
 
@@ -45,21 +51,19 @@ exports.deleteMovie = async (req, res) => {
 exports.updateMovie = async (req, res) => {
     try {
         const { movie_id } = req.params;
-        if (req.user.role != "admin") {
-
-            res.status(403).json({ msg: "NOT authorized !!" });
-        } else {
-
+        if (req.user.role == "admin") {
             const movie = await Movies.findOne({ where: { movie_id, isDeleted: false } })
 
             if (!movie) return res.status(401).json({ msg: "movie not found !!" })
 
             await movie.update(req.body);
 
-            res.status(200).json({ movie, msg: "movie update succesfully !!" });
+            res.status(200).json({ msg: "movie update succesfully !",movie });
+        } else {
+            res.status(403).json({ msg: "NOT authorized !!" });
         }
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({message: error.message})
     }
 };
 
@@ -72,16 +76,16 @@ exports.getMovie = async (req, res) => {
 
         if (cachedMovie) {
             console.log('Data from Redis');
-            return  res.json(JSON.parse(cachedMovie));
+            return  res.json({cachedMovie:JSON.parse(cachedMovie)});
         }
         const movie = await Movies.findOne({ where: { movie_id, isDeleted: false }, attributes: { exclude: ['isDeleted', 'deletedAt', 'createdAt', 'updatedAt'] } });
         if (!movie) res.status(404).json({ msg: "movie not found !!" })
         else {
             await redisClient.setEx(`movie-${movie_id}`,60*2,JSON.stringify(movie));
-            res.status(200).json(movie)
+            res.status(200).json({movie})
         }
     } catch (error) {
-        res.status(500).send(error.message)
+        res.status(500).send({message: error.message})
     }
 }
 
@@ -97,7 +101,7 @@ exports.getAllMovies = async (req, res) => {
 
         if (cachedMovies) {
             console.log('Data from Redis');
-            return res.json(JSON.parse(cachedMovies));
+            return res.json({cachedMovies:JSON.parse(cachedMovies)});
         }
 
         const movies = await Movies.findAll({ order: [['createdAt', 'DESC']], where: { isDeleted: false }, limit, offset ,attributes:{ exclude: ['isDeleted','deletedAt']}})
@@ -111,6 +115,6 @@ exports.getAllMovies = async (req, res) => {
         res.status(200).json({ currentPage: pageno, totalPages, movies });
 
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send({message: error.message})
     }
 };
