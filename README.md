@@ -331,12 +331,4 @@ having count(*)/total_seats* 100 >= 90 ;
     order by totalAmount desc;
     
 
-
-
-
-
-'Aaron Nader', '689', '42', '141'
-'Jarod Renner', '551', '40', '118'
-'Kendra Heidenreich', '422', '35', '91'
-'Kathryn Stehr', '703', '35', '102'
-'Dr. Alice Predovic', '133', '33', '99'
+    

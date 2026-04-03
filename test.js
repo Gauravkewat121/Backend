@@ -1,5 +1,7 @@
 // const moment = require('moment-timezone');
 
+const { func } = require("joi");
+
 // console.log("moment()", moment());   // time which is setDefault ---> india
 
 // console.log("moment.utc()",moment.utc());  // UTC time from IANA DB
@@ -83,7 +85,7 @@
 
 // The result format is in the following example.
 
- 
+
 
 // Example:
 
@@ -153,7 +155,7 @@
 //     The result is ordered first by level in ascending order
 //     Within the same level, employees are ordered by budget in descending order then by name in ascending order
 
- 
+
 // 1
 // 2
 // # Write your MySQL query statement below
@@ -188,7 +190,7 @@ function sayHi() {
   console.log(global.x);
   console.log(globalThis.x);
 }
-sayHi();
+// sayHi();
 
 // IIFE => immmediately invoked function expression 
 
@@ -200,3 +202,13 @@ sayHi();
 
 //  (function (){ console.log('x')}());
 
+const date = new Date('2026-03-30 12:00:00');
+
+console.log(date);
+
+function endTime(now, minutes) {
+  console.log(now.getTime())
+  return new Date(now.getTime() + (minutes * (60 * 1000)));
+}
+
+console.log(endTime(date, 120.2));

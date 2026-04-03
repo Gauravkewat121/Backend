@@ -1,7 +1,6 @@
 const sequelize = require('../config/db');
 const { Sequelize, QueryTypes } = require('sequelize');
 const redisClient = require('../config/redis');
-const { message } = require('../validation/paymentValidation');
 
 
 // 1. Generate a report that shows the Top 5 movies that sold the highest number of tickets.
