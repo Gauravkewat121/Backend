@@ -87,3 +87,5 @@ module.exports = function(sequelize, DataTypes) {
     ]
   });
 };
+
+//dhgdg
