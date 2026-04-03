@@ -12,14 +12,6 @@ const bookingSchema = Joi.object({
     .positive()
     .required(),
 
-  total_amount: Joi.number()
-    .precision(2)
-    .positive()
-    .required(),
-
-  status: Joi.string()
-    .valid('booked', 'wait-list', 'cancelled')
-    ,
     paymentDetails: paymentSchema
 });
 
